@@ -1,0 +1,25 @@
+{
+	"name": "juniwalk/orm",
+	"description": "Nice to have tools for doctrine/orm in nette framework.",
+	"type": "library",
+	"keywords": ["nette","nettefw","doctrine","orm"],
+	"license": "MIT",
+
+	"authors": [{
+		"name": "Martin Procházka",
+		"email": "juniwalk@outlook.cz",
+		"role": "Developer"
+	}],
+
+	"autoload": {
+		"psr-4": {"JuniWalk\\ORM\\": "src/"}
+	},
+
+	"require": {
+		"php": ">=8.1",
+		"juniwalk/utils": ">=2.0",
+		"nettrine/migrations": "^0.8",
+		"nettrine/orm": "^0.8",
+		"ramsey/uuid": "^4.0"
+	}
+}
