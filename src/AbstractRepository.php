@@ -109,6 +109,28 @@ abstract class AbstractRepository
 	}
 
 
+	/**
+	 * @internal
+	 */
+	public function fetchAssociations(array $result, array $columns): void
+	{
+		$qb = $this->createQueryBuilder('e', 'e.id')
+			->select('partial e.{id}')->where('e IN (:rows)');
+
+		foreach ($columns as $alias => $column) {
+			$qb->leftJoin($column, $alias)->addSelect($alias);
+		}
+
+		try {
+			$qb->getQuery()
+				->setParameter('rows', $result)
+				->getResult();
+
+		} catch (NoResultException) {
+		}
+	}
+
+
 	public function createQueryBuilder(string $alias, string $indexBy = null, callable $where = null): QueryBuilder
 	{
 		$qb = $this->entityManager->createQueryBuilder()->select($alias)
