@@ -109,7 +109,7 @@ abstract class AbstractRepository
 	}
 
 
-	public function countBy(callable $where): int|float
+	public function countBy(callable $where, ?int $maxResults = null): int|float|array
 	{
 		/** @see Hardcoded indexBy might cause issues with entities without $id */
 		$qb = $this->createQueryBuilder('e', 'e.id', function($qb) use ($where) {
@@ -117,8 +117,14 @@ abstract class AbstractRepository
 			return ($where($qb) ?: $qb);
 		});
 
-		return $qb->getQuery()->setMaxResults(1)
-			->getSingleScalarResult();
+		$qb->setMaxResults($qb->getMaxResults() ?? $maxResults);
+		$query = $qb->getQuery();
+
+		if ($qb->getMaxResults() === 1) {
+			return $query->getSingleScalarResult();
+		}
+
+		return $query->getScalarResult();
 	}
 
 
