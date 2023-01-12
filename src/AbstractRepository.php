@@ -14,6 +14,7 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\NoResultException;
 use JuniWalk\ORM\Exceptions\EntityNotFoundException;
+use JuniWalk\ORM\Interfaces\HtmlOption;
 use Nette\Application\UI\Form;
 
 abstract class AbstractRepository
@@ -106,6 +107,23 @@ abstract class AbstractRepository
 		} catch (NoResultException) {
 			return null;
 		}
+	}
+
+
+	public function createOptions(callable $where = null, ?int $maxResults = null): array
+	{
+		$result = $this->findBy($where ?? fn($qb) => $qb, $maxResults);
+		$items = [];
+
+		foreach ($result as $id => $item) {
+			if (!$item instanceof HtmlOption) {
+				continue;
+			}
+
+			$items[$id] = $item->createOption();
+		}
+
+		return $items;
 	}
 
 
