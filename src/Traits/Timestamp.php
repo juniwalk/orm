@@ -48,16 +48,16 @@ trait Timestamp
 	}
 
 
-	#[ORM\PreUpdate]
-	public function onUpdate(): void
+	#[ORM\PrePersist]
+	public function onCreated(): void
 	{
-		$this->modified = new DateTime;
+		$this->created ??= new DateTime;
 	}
 
 
-	#[ORM\PrePersist]
-	public function onPersist(): void
+	#[ORM\PreUpdate]
+	public function onModified(): void
 	{
-		$this->created = new DateTime;
+		$this->modified = new DateTime;
 	}
 }
