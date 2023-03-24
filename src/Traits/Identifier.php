@@ -27,4 +27,10 @@ trait Identifier
 	{
 		unset($this->id);
 	}
+
+
+	public function isNewEntity(): bool
+	{
+		return !isset($this->id);
+	}
 }
