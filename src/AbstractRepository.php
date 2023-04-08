@@ -207,7 +207,7 @@ abstract class AbstractRepository
 			return $this->getReference($data);
 		}
 
-		return Arrays::walk($data, fn($id) => yield $id => $this->getReference($id));
+		return Arrays::walk($data ?? [], fn($id) => yield $id => $this->getReference($id));
 	}
 
 
