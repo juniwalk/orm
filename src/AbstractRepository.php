@@ -15,6 +15,8 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\NoResultException;
 use JuniWalk\ORM\Exceptions\EntityNotFoundException;
 use JuniWalk\ORM\Interfaces\HtmlOption;
+use JuniWalk\Utils\Arrays;
+use JuniWalk\Utils\Strings;
 use Nette\Application\UI\Form;
 
 abstract class AbstractRepository
@@ -187,21 +189,25 @@ abstract class AbstractRepository
 	}
 
 
-	public function getReference(?int $id, string $entityName = null): ?object
+	public function getReference(mixed $id, string $entityName = null): ?object
 	{
 		if (!$id || empty($id)) {
 			return null;
 		}
 
-		return $this->entityManager->getReference($entityName ?: $this->entityName, $id);
+		return $this->entityManager->getReference($entityName ?: $this->entityName, (int) $id);
 	}
 
 
-	public function getFormReference(string $field, Form $form): ?object
+	public function getFormReference(string $field, Form $form): mixed
 	{
-		return $this->getReference(
-			(int) $form->getHttpData($form::DATA_LINE, $field) ?: null
-		);
+		$data = $form->getHttpData(Form::DataLine, $field) ?: null;
+
+		if (!Strings::endsWith($field, '[]')) {
+			return $this->getReference($data);
+		}
+
+		return Arrays::walk($data, fn($id) => yield $id => $this->getReference($id));
 	}
 
 
