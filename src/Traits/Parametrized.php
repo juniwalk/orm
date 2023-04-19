@@ -7,6 +7,7 @@
 
 namespace JuniWalk\ORM\Traits;
 
+use BackedEnum;
 use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
 use JsonSerializable;
@@ -22,7 +23,7 @@ trait Parametrized
 	 */
 	public function setParam(string $key, mixed $value, bool $overwrite = true): void
 	{
-		if (is_object($value) && !$value instanceof JsonSerializable) {
+		if (is_object($value) && !($value instanceof JsonSerializable || $value instanceof BackedEnum)) {
 			throw new InvalidArgumentException('Object instances have to implement JsonSerializable');
 		}
 
