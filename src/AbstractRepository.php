@@ -191,7 +191,7 @@ abstract class AbstractRepository
 
 	public function getReference(mixed $id, string $entityName = null): ?object
 	{
-		if (!$id || empty($id)) {
+		if (!$id || empty($id) || !is_numeric($id)) {
 			return null;
 		}
 
