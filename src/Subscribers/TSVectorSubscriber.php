@@ -11,6 +11,7 @@ use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Events;
 use JuniWalk\ORM\Mapping\TSVector;
+use JuniWalk\ORM\Types\TSVectorType;
 
 final class TSVectorSubscriber implements EventSubscriber
 {
