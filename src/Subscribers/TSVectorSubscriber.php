@@ -24,6 +24,8 @@ final class TSVectorSubscriber implements EventSubscriber
     public function loadClassMetadata(EventArgs $event)
     {
 		$metadata = $event->getClassMetadata();
+		$platform = $event->getObjectManager()->getConnection()
+			->getDatabasePlatform();
 
 		foreach ($metadata->getFieldNames() as $fieldName) {
 			$mapping = $metadata->getFieldMapping($fieldName);
@@ -35,12 +37,10 @@ final class TSVectorSubscriber implements EventSubscriber
 			}
 
 			$mapping['generated'] = 2;
-			$mapping['default'] = null;
-			$mapping['nullable'] = false;
 			$mapping['notUpdatable'] = true;
 			$mapping['notInsertable'] = true;
 			$mapping['columnDefinition'] = $attribute[0]->newInstance()
-				->createDefinition($mapping['type'], $metadata);
+				->createDefinition($mapping['type'], $metadata, $platform);
 
 			$metadata->setAttributeOverride($fieldName, $mapping);
 		}
