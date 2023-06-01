@@ -10,7 +10,7 @@ namespace JuniWalk\ORM\Subscribers;
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Events;
-use JuniWalk\ORM\Attributes\TSVector;
+use JuniWalk\ORM\Mapping\TSVector;
 
 final class TSVectorSubscriber implements EventSubscriber
 {

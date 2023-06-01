@@ -5,7 +5,7 @@
  * @license   MIT License
  */
 
-namespace JuniWalk\ORM\Attributes;
+namespace JuniWalk\ORM\Mapping;
 
 use Attribute;
 use Doctrine\ORM\Mapping\ClassMetadata;
