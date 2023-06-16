@@ -151,8 +151,12 @@ abstract class AbstractRepository
 	/**
 	 * @internal
 	 */
-	public function fetchAssociations(array $result, array $columns): void
+	public function fetchAssociations(array|object $result, array $columns): void
 	{
+		if (!is_array($result)) {
+			$result = [$result];
+		}
+
 		$qb = $this->createQueryBuilder('e', 'e.id')
 			->select('partial e.{id}')->where('e IN (:rows)');
 
