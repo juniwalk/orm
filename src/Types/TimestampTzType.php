@@ -16,12 +16,12 @@ use Exception;
 
 class TimestampTzType extends Type
 {
-	public const TYPE = 'timestamptz';
-	private const FORMAT = 'Y-m-d H:i:s.uO';
+	public const Type = 'timestamptz';
+	public const Format = 'Y-m-d H:i:s.uO';
 
 	public function getName(): string
 	{
-		return self::TYPE;
+		return self::Type;
 	}
 
 
@@ -41,14 +41,14 @@ class TimestampTzType extends Type
 		}
 
 		try {
-			$datetime = DateTime::createFromFormat(self::FORMAT, $value);
+			$datetime = DateTime::createFromFormat(self::Format, $value);
 
 		} catch (Exception $e) {
-			throw ConversionException::conversionFailedFormat($value, $this->getName(), self::FORMAT, $e);
+			throw ConversionException::conversionFailedFormat($value, $this->getName(), self::Format, $e);
 		}
 
 		if (!$datetime && !($datetime = new DateTime($value))) {
-			throw ConversionException::conversionFailedFormat($value, $this->getName(), self::FORMAT);
+			throw ConversionException::conversionFailedFormat($value, $this->getName(), self::Format);
 		}
 
 		return $datetime;
@@ -65,7 +65,7 @@ class TimestampTzType extends Type
 		}
 
 		if ($value instanceof DateTimeInterface) {
-			return $value->format(self::FORMAT);
+			return $value->format(self::Format);
 		}
 
 		throw ConversionException::conversionFailedInvalidType($value, $this->getName(), ['null', 'DateTime']);

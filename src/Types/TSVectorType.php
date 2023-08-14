@@ -12,17 +12,17 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 
 class TSVectorType extends Type
 {
-	public const TYPE = 'tsvector';
+	public const Type = 'tsvector';
 
 	public function getName()
 	{
-		return self::TYPE;
+		return self::Type;
 	}
 
 
 	public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
 	{
-		return self::TYPE;
+		return self::Type;
 	}
 
 
