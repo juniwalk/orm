@@ -32,7 +32,7 @@ final class TSVectorSubscriber implements EventSubscriber
 			$attribute = $metadata->getReflectionClass()->getProperty($fieldName)
 				->getAttributes(TSVector::class);
 
-			if (!$attribute || $mapping['type'] <> TSVectorType::TYPE) {
+			if (!$attribute || $mapping['type'] <> TSVectorType::Type) {
 				continue;
 			}
 
