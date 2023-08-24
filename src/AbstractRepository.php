@@ -217,7 +217,7 @@ abstract class AbstractRepository
 
 	public function truncateTable(bool $cascade = false, string $entityName = null): void
 	{
-		$this->query('TRUNCATE TABLE "'.$this->getTableName($entityName).'" RESTART IDENTITY'.($cascade == true ? ' CASCADE' : null));
+		$this->query('TRUNCATE TABLE '.$this->getTableName($entityName).' RESTART IDENTITY'.($cascade == true ? ' CASCADE' : null));
 	}
 
 
