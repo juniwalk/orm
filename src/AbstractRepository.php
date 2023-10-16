@@ -93,15 +93,15 @@ abstract class AbstractRepository
 	/**
 	 * @throws NoResultException
 	 */
-	public function getById(int $id): object
+	public function getById(mixed $id): object
 	{
 		return $this->getOneBy(function($qb) use ($id) {
-			$qb->where('e.id = :id')->setParameter('id', $id);
+			$qb->where('e.id = :id')->setParameter('id', (int) $id);
 		});
 	}
 
 
-	public function findById(int $id): ?object
+	public function findById(mixed $id): ?object
 	{
 		try {
 			return $this->getById($id);
@@ -203,15 +203,20 @@ abstract class AbstractRepository
 	}
 
 
-	public function getFormReference(string $field, Form $form): mixed
+	public function getFormReference(string $field, Form $form, bool $findEagerly = true): mixed
 	{
 		$data = $form->getHttpData(Form::DataLine, $field) ?: null;
+		$callback = $this->getReference(...);
 
-		if (!Strings::endsWith($field, '[]')) {
-			return $this->getReference($data);
+		if ($findEagerly) {
+			$callback = $this->findById(...);
 		}
 
-		return Arrays::walk($data ?? [], fn($id) => yield $id => $this->getReference($id));
+		if (!Strings::endsWith($field, '[]')) {
+			return $callback($data);
+		}
+
+		return Arrays::walk($data ?? [], fn($id) => yield $id => $callback($id));
 	}
 
 
