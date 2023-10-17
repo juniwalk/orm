@@ -7,6 +7,7 @@
 
 namespace JuniWalk\ORM;
 
+use DateTime;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
@@ -217,6 +218,24 @@ abstract class AbstractRepository
 		}
 
 		return Arrays::walk($data ?? [], fn($id) => yield $id => $callback($id));
+	}
+
+
+	/**
+	 * @throws DBALException
+	 */
+	public function createPartition(DateTime $date, string $range, string $entityName = null): string
+	{
+		$tableName = $this->getTableName($entityName);
+		$partitionName = $tableName.'_'.$date->format('Ymd');
+
+		$valueFrom = $date->format('Y-m-d');
+		$valueTo = (clone $date)->modify($range)->format('Y-m-d');
+
+		$this->query('DROP TABLE IF EXISTS '.$partitionName.' CASCADE;');
+		$this->query('CREATE TABLE IF NOT EXISTS '.$partitionName.' PARTITION OF '.$tableName.' FOR VALUES FROM (\''.$valueFrom.'\') TO (\''.$valueTo.'\');');
+
+		return $partitionName;
 	}
 
 
