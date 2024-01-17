@@ -13,31 +13,24 @@ use Nette\Security\IIdentity as Identity;
 trait Authorable
 {
 	#[ORM\ManyToOne(targetEntity: Identity::class)]
-	private ?Identity $author = null;
+	#[ORM\JoinColumn(nullable: false)]
+	private Identity $author;
 
 
-	public function setAuthor(?Identity $author): void
+	public function setAuthor(Identity $author): void
 	{
 		$this->author = $author;
 	}
 
 
-	public function getAuthor(): ?Identity
+	public function getAuthor(): Identity
 	{
 		return $this->author;
 	}
 
 
-	public function isAuthor(?Identity $author): bool
+	public function isAuthor(Identity $author): bool
 	{
-		if (!$author XOR !$this->author) {
-			return false;
-		}
-
-		if (!$author && !$this->author) {
-			return true;
-		}
-
 		return $this->author->getId() === $author->getId();
 	}
 }

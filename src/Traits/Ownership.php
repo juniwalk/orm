@@ -13,24 +13,23 @@ use Nette\Security\IIdentity as Identity;
 trait Ownership
 {
 	#[ORM\ManyToOne(targetEntity: Identity::class)]
-	#[ORM\JoinColumn(nullable: false)]
-	private Identity $owner;
+	private ?Identity $owner = null;
 
 
-	public function setOwner(Identity $owner): void
+	public function setOwner(?Identity $owner): void
 	{
 		$this->owner = $owner;
 	}
 
 
-	public function getOwner(): Identity
+	public function getOwner(): ?Identity
 	{
 		return $this->owner;
 	}
 
 
-	public function isOwner(Identity $owner): bool
+	public function isOwner(?Identity $owner): bool
 	{
-		return $this->owner->getId() === $owner->getId();
+		return $this->owner?->getId() === $owner?->getId();
 	}
 }
