@@ -17,6 +17,6 @@ final class EntityNotValidException extends \RuntimeException
 
 	public static function fromClass(string $entityName): static
 	{
-		return new static('Entity '.$entityName.' is not valid.');
+		return new static('Entity "'.$entityName.'" is not valid.');
 	}
 }

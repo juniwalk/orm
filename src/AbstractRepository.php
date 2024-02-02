@@ -22,10 +22,13 @@ use Nette\Application\UI\Form;
 
 abstract class AbstractRepository
 {
+	public const DefaultAlias = 'e';
+	public const DefaultIdentifier = 'e.id';
+	public const DefaultIndexBy = self::DefaultIdentifier;
+
 	protected readonly EntityManager $entityManager;
 	protected readonly Connection $connection;
 	protected string $entityName;
-
 
 	/**
 	 * @throws EntityNotFoundException
@@ -35,19 +38,22 @@ abstract class AbstractRepository
 		$this->connection = $entityManager->getConnection();
 		$this->entityManager = $entityManager;
 
-		if (!$this->entityName) {
-			throw EntityNotFoundException::fromClass($this->entityName);
+		if (!isset($this->entityName) || !class_exists($this->entityName)) {
+			throw EntityNotFoundException::fromClass($this->entityName ?? 'undefined');
 		}
 	}
+
 
 
 	/**
 	 * @throws NoResultException
 	 */
-	public function getBy(callable $where, ?int $maxResults = null): array
-	{
-		/** @see Hardcoded indexBy might cause issues with entities without $id */
-		$qb = $this->createQueryBuilder('e', 'e.id', $where);
+	public function getBy(
+		callable $where,
+		?int $maxResults = null,
+		?string $indexBy = self::DefaultIndexBy,
+	): array {
+		$qb = $this->createQueryBuilder(self::DefaultAlias, $indexBy, $where);
 		$qb->setMaxResults($qb->getMaxResults() ?? $maxResults);
 
 		return $qb->getQuery()
@@ -58,10 +64,9 @@ abstract class AbstractRepository
 	/**
 	 * @throws NoResultException
 	 */
-	public function getOneBy(callable $where): object
+	public function getOneBy(callable $where, ?string $indexBy = self::DefaultIndexBy): object
 	{
-		/** @see Hardcoded indexBy might cause issues with entities without $id */
-		$qb = $this->createQueryBuilder('e', 'e.id', $where);
+		$qb = $this->createQueryBuilder(self::DefaultAlias, $indexBy, $where);
 		$qb->setMaxResults(1);
 
 		return $qb->getQuery()
@@ -69,10 +74,13 @@ abstract class AbstractRepository
 	}
 
 
-	public function findBy(callable $where, ?int $maxResults = null): array
-	{
+	public function findBy(
+		callable $where,
+		?int $maxResults = null,
+		string $indexBy = self::DefaultIndexBy,
+	): array {
 		try {
-			return $this->getBy($where, $maxResults);
+			return $this->getBy($where, $maxResults, $indexBy);
 
 		} catch (NoResultException) {
 			return [];
@@ -80,10 +88,10 @@ abstract class AbstractRepository
 	}
 
 
-	public function findOneBy(callable $where): ?object
+	public function findOneBy(callable $where, ?string $indexBy = self::DefaultIndexBy): ?object
 	{
 		try {
-			return $this->getOneBy($where);
+			return $this->getOneBy($where, $indexBy);
 
 		} catch (NoResultException) {
 			return null;
@@ -94,18 +102,19 @@ abstract class AbstractRepository
 	/**
 	 * @throws NoResultException
 	 */
-	public function getById(mixed $id): object
+	public function getById(mixed $id, ?string $indexBy = self::DefaultIndexBy): object
 	{
-		return $this->getOneBy(function($qb) use ($id) {
-			$qb->where('e.id = :id')->setParameter('id', (int) $id);
-		});
+		$where = fn($qb) => $qb->where(self::DefaultIdentifier.' = :id')
+			->setParameter('id', (int) $id);
+
+		return $this->getOneBy($where, $indexBy);
 	}
 
 
-	public function findById(mixed $id): ?object
+	public function findById(mixed $id, ?string $indexBy = self::DefaultIndexBy): ?object
 	{
 		try {
-			return $this->getById($id);
+			return $this->getById($id, $indexBy);
 
 		} catch (NoResultException) {
 			return null;
@@ -113,9 +122,12 @@ abstract class AbstractRepository
 	}
 
 
-	public function createOptions(callable $where = null, ?int $maxResults = null): array
-	{
-		$result = $this->findBy($where ?? fn($qb) => $qb, $maxResults);
+	public function createOptions(
+		callable $where = null,
+		?int $maxResults = null,
+		?string $indexBy = self::DefaultIndexBy,
+	): array {
+		$result = $this->findBy($where ?? fn($qb) => $qb, $maxResults, $indexBy);
 		$items = [];
 
 		foreach ($result as $id => $item) {
@@ -130,15 +142,15 @@ abstract class AbstractRepository
 	}
 
 
-	public function countBy(callable $where, ?int $maxResults = null): int|float|array
-	{
-		/** @see Hardcoded indexBy might cause issues with entities without $id */
-		$qb = $this->createQueryBuilder('e', 'e.id', function($qb) use ($where) {
-			$qb->select('count(e.id)');
-			return ($where($qb) ?: $qb);
-		});
-
+	public function countBy(
+		callable $where,
+		?int $maxResults = null,
+		?string $indexBy = self::DefaultIndexBy,
+	): int|float|array {
+		$where = fn($qb) => ($where($qb) ?? $qb)->select('COUNT('.self::DefaultIdentifier.')');
+		$qb = $this->createQueryBuilder(self::DefaultAlias, $indexBy, $where);
 		$qb->setMaxResults($qb->getMaxResults() ?? $maxResults);
+
 		$query = $qb->getQuery();
 
 		if ($qb->getMaxResults() === 1) {
@@ -158,8 +170,9 @@ abstract class AbstractRepository
 			$result = [$result];
 		}
 
-		$qb = $this->createQueryBuilder('e', 'e.id')
-			->select('partial e.{id}')->where('e IN (:rows)');
+		$idPartial = Strings::replace(self::DefaultIdentifier, '/([a-z]+)\.(\w+)/i', '$1.{$2}');
+		$qb = $this->createQueryBuilder(self::DefaultAlias, self::DefaultIndexBy)
+			->select('partial '.$idPartial)->where(self::DefaultAlias.' IN (:rows)');
 
 		foreach ($columns as $alias => $column) {
 			$qb->leftJoin($column, $alias)->addSelect($alias);
