@@ -56,10 +56,7 @@ abstract class AbstractRepository
 		$qb = $this->createQueryBuilder(self::DefaultAlias, $indexBy, $where);
 		$qb->setMaxResults($qb->getMaxResults() ?? $maxResults);
 
-		$result = $qb->getQuery()
-			->getResult();
-
-		if (!$result) {
+		if (!$result = $qb->getQuery()->getResult()) {
 			throw new NoResultException;
 		}
 
