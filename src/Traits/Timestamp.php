@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 trait Timestamp
 {
 	#[ORM\Column(type: 'datetimetz', options: ['default' => 'CURRENT_TIMESTAMP'])]
-	private DateTime $created;
+	private readonly DateTime $created;
 
 	#[ORM\Column(type: 'datetimetz', nullable: true)]
 	private ?DateTime $modified = null;
