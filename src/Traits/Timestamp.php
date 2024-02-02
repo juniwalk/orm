@@ -20,6 +20,12 @@ trait Timestamp
 	private ?DateTime $modified = null;
 
 
+	public function setCreated(DateTimeInterface $created): void
+	{
+		$this->created = clone $created;
+	}
+
+
 	public function getCreated(): DateTime
 	{
 		return clone $this->created;
