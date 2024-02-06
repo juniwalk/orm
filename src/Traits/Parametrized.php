@@ -14,7 +14,7 @@ use JsonSerializable;
 
 trait Parametrized
 {
-	#[ORM\Column(type: 'json', options: ['default' => '[]'])]
+	#[ORM\Column(type: 'json', options: ['jsonb' => true, 'default' => '[]'])]
 	private array $params = [];
 
 
