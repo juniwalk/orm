@@ -11,6 +11,7 @@ use BackedEnum;
 use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
 use JsonSerializable;
+use JuniWalk\Utils\Format;
 
 trait Parametrized
 {
@@ -23,7 +24,7 @@ trait Parametrized
 	 */
 	public function setParam(string $key, mixed $value, bool $overwrite = true): void
 	{
-		if (is_object($value) && !($value instanceof JsonSerializable || $value instanceof BackedEnum)) {
+		if ($value && !$value = Format::scalarize($value)) {
 			throw new InvalidArgumentException('Object instances have to implement JsonSerializable');
 		}
 
