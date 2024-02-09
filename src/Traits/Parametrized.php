@@ -42,10 +42,6 @@ trait Parametrized
 
 	public function getParam(string $key): mixed
 	{
-		if (!$this->hasParam($key)) {
-			return null;
-		}
-
 		return $this->params[$key] ?? null;
 	}
 
