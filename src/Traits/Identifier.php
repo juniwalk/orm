@@ -17,7 +17,7 @@ trait Identifier
 	protected readonly int $id;
 
 
-	final public function getId(): ?int
+	public function getId(): ?int
 	{
 		return $this->id ?? null;
 	}
