@@ -15,7 +15,7 @@ trait Comments
 {
 	#[ORM\ManyToMany(targetEntity: Comment::class, indexBy: 'id', orphanRemoval: true, fetch: 'EXTRA_LAZY')]
 	#[ORM\OrderBy(['created' => 'DESC'])]
-	private Collection $comments;
+	protected Collection $comments;
 
 
 	public function addComment(Comment $comment): void

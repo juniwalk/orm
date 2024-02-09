@@ -14,7 +14,7 @@ trait Authorable
 {
 	#[ORM\ManyToOne(targetEntity: Identity::class)]
 	#[ORM\JoinColumn(nullable: false)]
-	private Identity $author;
+	protected Identity $author;
 
 
 	public function setAuthor(Identity $author): void

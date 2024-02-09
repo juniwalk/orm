@@ -16,7 +16,7 @@ use JuniWalk\Utils\Format;
 trait Parametrized
 {
 	#[ORM\Column(type: 'json', options: ['jsonb' => true, 'default' => '[]'])]
-	private array $params = [];
+	protected array $params = [];
 
 
 	/**

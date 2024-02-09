@@ -13,7 +13,7 @@ use Nette\Security\IIdentity as Identity;
 trait Ownership
 {
 	#[ORM\ManyToOne(targetEntity: Identity::class)]
-	private ?Identity $owner = null;
+	protected ?Identity $owner = null;
 
 
 	public function setOwner(?Identity $owner): void
