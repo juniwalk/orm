@@ -14,7 +14,9 @@ trait Identifier
 	#[ORM\Column(type: 'integer', unique: true, nullable: false)]
 	#[ORM\GeneratedValue(strategy: 'IDENTITY')]
 	#[ORM\Id]
-	protected readonly int $id;
+	// ! Cannot be readonly as Doctrine modifies it on remove
+	// ! See doctrine/orm issues #9538 & #9863
+	protected /*readonly*/ int $id;
 
 
 	public function getId(): ?int
