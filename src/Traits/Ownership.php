@@ -7,29 +7,11 @@
 
 namespace JuniWalk\ORM\Traits;
 
-use Doctrine\ORM\Mapping as ORM;
-use Nette\Security\IIdentity as Identity;
-
+/**
+ * @deprecated
+ * Use Ownerable instead
+ */
 trait Ownership
 {
-	#[ORM\ManyToOne(targetEntity: Identity::class)]
-	protected ?Identity $owner = null;
-
-
-	public function setOwner(?Identity $owner): void
-	{
-		$this->owner = $owner;
-	}
-
-
-	public function getOwner(): ?Identity
-	{
-		return $this->owner;
-	}
-
-
-	public function isOwner(?Identity $owner): bool
-	{
-		return $this->owner?->getId() === $owner?->getId();
-	}
+	use Ownerable;
 }
