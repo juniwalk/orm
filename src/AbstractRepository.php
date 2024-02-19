@@ -44,7 +44,6 @@ abstract class AbstractRepository
 	}
 
 
-
 	/**
 	 * @throws NoResultException
 	 */
@@ -150,7 +149,7 @@ abstract class AbstractRepository
 		?int $maxResults = null,
 		?string $indexBy = self::DefaultIndexBy,
 	): int|float|array {
-		$where = fn($qb) => ($where($qb) ?? $qb)->select('COUNT('.self::DefaultIdentifier.')');
+		$where = fn($qb) => ($where($qb) ?? $qb)->addSelect('COUNT('.self::DefaultIdentifier.')');
 		$qb = $this->createQueryBuilder(self::DefaultAlias, $indexBy, $where);
 		$qb->setMaxResults($qb->getMaxResults() ?? $maxResults);
 
