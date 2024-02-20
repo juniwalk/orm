@@ -13,16 +13,16 @@ use Doctrine\ORM\Mapping as ORM;
 class Address
 {
 	#[ORM\Column(type: 'string', length: 64, nullable: true)]
-	private ?string $street = null;
+	protected ?string $street = null;
 
 	#[ORM\Column(type: 'string', length: 48, nullable: true)]
-	private ?string $city = null;
+	protected ?string $city = null;
 
 	#[ORM\Column(type: 'string', length: 6, nullable: true)]
-	private ?string $zip = null;
+	protected ?string $zip = null;
 
 	#[ORM\Column(type: 'string', length: 2, nullable: true)]
-	private ?string $country = null;
+	protected ?string $country = null;
 
 
 	public function __toString(): string
