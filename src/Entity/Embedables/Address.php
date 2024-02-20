@@ -21,7 +21,7 @@ class Address
 	#[ORM\Column(type: 'string', length: 6, nullable: true)]
 	private ?string $zip = null;
 
-	#[ORM\Column(type: 'string', length: 3, nullable: true)]
+	#[ORM\Column(type: 'string', length: 2, nullable: true)]
 	private ?string $country = null;
 
 
@@ -78,6 +78,10 @@ class Address
 
 	public function setCountry(?string $country): void
 	{
+		if (!empty($country)) {
+			$country = strtoupper($country);
+		}
+
 		$this->country = $country;
 	}
 
