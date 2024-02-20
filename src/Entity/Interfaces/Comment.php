@@ -5,7 +5,7 @@
  * @license   MIT License
  */
 
-namespace JuniWalk\ORM\Interfaces;
+namespace JuniWalk\ORM\Entity\Interfaces;
 
 interface Comment
 {
