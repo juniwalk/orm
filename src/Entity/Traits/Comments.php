@@ -5,9 +5,9 @@
  * @license   MIT License
  */
 
-namespace JuniWalk\ORM\Traits;
+namespace JuniWalk\ORM\Entity\Traits;
 
-use JuniWalk\ORM\Interfaces\Comment;
+use JuniWalk\ORM\Entity\Interfaces\Comment;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 

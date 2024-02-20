@@ -5,7 +5,7 @@
  * @license   MIT License
  */
 
-namespace JuniWalk\ORM\Traits;
+namespace JuniWalk\ORM\Entity\Traits;
 
 use Doctrine\ORM\Mapping as ORM;
 use Nette\Security\IIdentity as Identity;
