@@ -7,9 +7,9 @@
 
 namespace JuniWalk\ORM\Entity\Traits;
 
-use JuniWalk\ORM\Entity\Interfaces\Comment;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JuniWalk\ORM\Entity\Interfaces\Comment;
 
 trait Comments
 {
