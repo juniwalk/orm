@@ -31,7 +31,7 @@ final class ILike extends FunctionNode
 
 		$parser->match(Lexer::T_COMMA); // (5)
 
-		$this->query = $parser->InstanceOfParameter(); // (6)
+		$this->query = $parser->StringPrimary(); // (6)
 
 		$parser->match(Lexer::T_CLOSE_PARENTHESIS); // (7)
 	}
