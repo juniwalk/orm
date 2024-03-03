@@ -13,6 +13,7 @@ class SearchQuery implements Stringable
 {
 	protected const CharFollow = '"';
 	protected const CharPartial = '*';
+	protected const CharNot = '!';
 
 	protected const ModifierPartial = ':*';
 
@@ -20,13 +21,11 @@ class SearchQuery implements Stringable
 	protected const MethodAnd = '&';
 	protected const MethodOr = '|';
 
-	protected const TupleAnd = ['and', 'a', self::MethodAnd];
-	protected const TupleOr = ['or', 'nebo', self::MethodOr];
-
 	public function __construct(
 		protected string $query,
 		protected string $methodDefault = self::MethodAnd,
 	) {
+		$this->query = strtolower($query);
 	}
 
 
@@ -44,28 +43,34 @@ class SearchQuery implements Stringable
 		$output = '';
 
 		foreach ($tokens as $key => $token) {
-			$token = strtolower($token);
+			$methodNext = null;
 
-			if (in_array($token, self::TupleAnd)) {
-				$output = substr($output, 0, -3).' '.self::MethodAnd.' ';
-				$method = $methodNext = $this->methodDefault;
-				continue;
+			if (in_array($token, ['and', 'a', self::MethodAnd])) {
+				$output = substr($output, 0, -3);
+				$methodNext = $method;
+				$method = self::MethodAnd;
+				$token = '';
 			}
 
-			if (in_array($token, self::TupleOr)) {
-				$output = substr($output, 0, -3).' '.self::MethodOr.' ';
-				$method = $methodNext = $this->methodDefault;
-				continue;
+			if (in_array($token, ['or', 'nebo', self::MethodOr])) {
+				$output = substr($output, 0, -3);
+				$methodNext = $method;
+				$method = self::MethodOr;
+				$token = '';
 			}
 
 			if (str_starts_with($token, self::CharFollow)) {
 				$token = substr($token, 1);
-				$methodNext = $method = self::MethodFollow;
+				$method = self::MethodFollow;
 			}
 
 			if (str_ends_with($token, self::CharFollow)) {
 				$token = substr($token, 0, -1);
 				$method = $this->methodDefault;
+			}
+
+			if (str_ends_with($token, self::CharNot)) {
+				$token = substr($token, 0, -1);
 			}
 
 			if (str_ends_with($token, self::CharPartial)) {
@@ -78,8 +83,9 @@ class SearchQuery implements Stringable
 				$output .= ' '.$method.' ';
 			}
 
-			$methodNext ??= $method;
-			$method = $methodNext;
+			if ($methodNext) {
+				$method = $methodNext;
+			}
 		}
 
 		return $output;
