@@ -48,6 +48,6 @@ final class Rank extends FunctionNode
 		$query = $sqlWalker->walkSimpleArithmeticExpression($this->query);
 		$lang = $sqlWalker->walkSimpleArithmeticExpression($this->lang);
 
-		return "ts_rank_cd({$column}, websearch_to_tsquery({$lang}, {$query}))";
+		return "ts_rank_cd({$column}, to_tsquery({$lang}, {$query}))";
 	}
 }

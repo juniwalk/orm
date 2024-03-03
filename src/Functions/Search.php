@@ -16,7 +16,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * "search" "(" Column, Query, Lang ")"
  */
-final class Search extends FunctionNode
+class Search extends FunctionNode
 {
 	public Node $column;
 	public Node $query;
@@ -48,6 +48,6 @@ final class Search extends FunctionNode
 		$query = $sqlWalker->walkSimpleArithmeticExpression($this->query);
 		$lang = $sqlWalker->walkSimpleArithmeticExpression($this->lang);
 
-		return "{$column} @@ websearch_to_tsquery({$lang}, {$query})";
+		return "{$column} @@ to_tsquery({$lang}, {$query})";
 	}
 }
