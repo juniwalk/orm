@@ -174,6 +174,10 @@ abstract class AbstractRepository
 			$result = [$result];
 		}
 
+		if (empty($result) || empty($columns)) {
+			return;
+		}
+
 		$idPartial = Strings::replace(self::DefaultIdentifier, '/([a-z]+)\.(\w+)/i', '$1.{$2}');
 		$qb = $this->createQueryBuilder(self::DefaultAlias, self::DefaultIndexBy)
 			->select('partial '.$idPartial)->where(self::DefaultAlias.' IN (:rows)');
