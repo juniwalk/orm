@@ -25,6 +25,10 @@ class SearchQuery implements Stringable
 		protected string $query,
 		protected string $methodDefault = self::MethodAnd,
 	) {
+		if (str_ends_with($query, self::CharFollow)) {
+			$query = rtrim($query, self::CharPartial).self::CharPartial;
+		}
+
 		$this->query = strtolower($query);
 	}
 
