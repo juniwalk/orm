@@ -98,6 +98,7 @@ class SearchQuery implements Stringable
 	{
 		$token = strtr($token, [
 			self::ModifierPartial => self::CharPartial,
+			':' => null,
 			'<' => null,
 			'>' => null,
 		]);
