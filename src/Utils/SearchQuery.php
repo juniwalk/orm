@@ -98,9 +98,9 @@ class SearchQuery implements Stringable
 	{
 		$token = strtr($token, [
 			self::ModifierPartial => self::CharPartial,
-			':' => null,
 			'<' => null,
 			'>' => null,
+			':' => ' ',
 		]);
 
 		return trim($token, " \n\r\t\v\x00".implode('', [
