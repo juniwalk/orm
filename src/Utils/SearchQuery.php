@@ -25,9 +25,9 @@ class SearchQuery implements Stringable
 		protected string $query,
 		protected string $methodDefault = self::MethodAnd,
 	) {
-		$query = trim($query);
+		$query = $this->cleanup($query);
 
-		if (str_ends_with($query, self::CharFollow)) {
+		if (!str_ends_with($query, self::CharFollow)) {
 			$query = rtrim($query, self::CharPartial).self::CharPartial;
 		}
 
@@ -75,15 +75,11 @@ class SearchQuery implements Stringable
 				$method = $this->methodDefault;
 			}
 
-			if (str_ends_with($token, self::CharNot)) {
-				$token = substr($token, 0, -1);
-			}
-
 			if (str_ends_with($token, self::CharPartial)) {
 				$token = str_replace(self::CharPartial, self::ModifierPartial, $token);
 			}
 
-			$output .= $token;
+			$output .= $this->cleanup($token);
 
 			if ($key <> $lastKey) {
 				$output .= ' '.$method.' ';
@@ -95,5 +91,21 @@ class SearchQuery implements Stringable
 		}
 
 		return $output;
+	}
+
+
+	private function cleanup(string $token): string
+	{
+		$token = strtr($token, [
+			self::ModifierPartial => self::CharPartial,
+			'<' => null,
+			'>' => null,
+		]);
+
+		return trim($token, " \n\r\t\v\x00".implode('', [
+			self::MethodAnd,
+			self::MethodOr,
+			self::CharNot,
+		]));
 	}
 }
