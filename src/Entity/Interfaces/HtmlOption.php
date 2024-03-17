@@ -7,9 +7,10 @@
 
 namespace JuniWalk\ORM\Entity\Interfaces;
 
+use JuniWalk\ORM\Enums\Display;
 use Nette\Utils\Html;
 
 interface HtmlOption
 {
-	public function createOption(): Html;
+	public function createOption(?Display $display = null): Html;
 }

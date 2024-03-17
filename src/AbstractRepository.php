@@ -15,6 +15,7 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\NoResultException;
 use JuniWalk\ORM\Entity\Interfaces\HtmlOption;
+use JuniWalk\ORM\Enums\Display;
 use JuniWalk\ORM\Exceptions\EntityNotFoundException;
 use JuniWalk\Utils\Arrays;
 use JuniWalk\Utils\Strings;
@@ -128,8 +129,10 @@ abstract class AbstractRepository
 		callable $where = null,
 		?int $maxResults = null,
 		?string $indexBy = self::DefaultIndexBy,
+		?Display $display = null,
 	): array {
 		$result = $this->findBy($where ?? fn($qb) => $qb, $maxResults, $indexBy);
+		$display ??= Display::Large;
 		$items = [];
 
 		foreach ($result as $id => $item) {
@@ -137,7 +140,7 @@ abstract class AbstractRepository
 				continue;
 			}
 
-			$items[$id] = $item->createOption();
+			$items[$id] = $item->createOption($display);
 		}
 
 		return $items;
