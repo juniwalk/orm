@@ -8,6 +8,7 @@
 namespace JuniWalk\ORM\Entity\Traits;
 
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\ORM\Mapping as ORM;
 use JuniWalk\ORM\Entity\Interfaces\Comment;
 
@@ -32,13 +33,19 @@ trait Comments
 
 	public function hasComments(): bool
 	{
-		return (bool) $this->comments->count();
+		return (bool) $this->getCommentsCount();
 	}
 
 
 	public function getCommentsCount(): int
 	{
-		return $this->comments->count();
+		try {
+			return $this->comments->count();
+
+		} catch (EntityNotFoundException) {
+		}
+
+		return 0;
 	}
 
 
