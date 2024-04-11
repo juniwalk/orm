@@ -90,18 +90,20 @@ class SearchQuery implements Stringable
 			}
 		}
 
-		return $output;
+		return $this->cleanup($output, true);
 	}
 
 
-	private function cleanup(string $token): string
+	private function cleanup(string $token, bool $trimOnly = false): string
 	{
-		$token = strtr($token, [
-			self::ModifierPartial => self::CharPartial,
-			'<' => null,
-			'>' => null,
-			':' => ' ',
-		]);
+		if ($trimOnly === false) {
+			$token = strtr($token, [
+				self::ModifierPartial => self::CharPartial,
+				'<' => null,
+				'>' => null,
+				':' => ' ',
+			]);
+		}
 
 		return trim($token, " \n\r\t\v\x00".implode('', [
 			self::MethodAnd,
