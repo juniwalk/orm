@@ -19,7 +19,7 @@ use JuniWalk\ORM\Enums\Display;
 use JuniWalk\ORM\Exceptions\EntityNotFoundException;
 use JuniWalk\Utils\Arrays;
 use JuniWalk\Utils\Strings;
-use Nette\Application\UI\Form;
+use Nette\Forms\Form;
 
 abstract class AbstractRepository
 {
@@ -220,7 +220,7 @@ abstract class AbstractRepository
 
 	public function getReference(mixed $id, string $entityName = null): ?object
 	{
-		if (!$id || empty($id) || !is_numeric($id)) {
+		if (!$id || !is_numeric($id)) {
 			return null;
 		}
 
