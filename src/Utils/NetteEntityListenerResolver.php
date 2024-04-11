@@ -14,8 +14,9 @@ use Nette\DI\MissingServiceException;
 class NetteEntityListenerResolver implements EntityListenerResolver
 {
 	public function __construct(
-		private readonly Container $container
-	) {}
+		private readonly Container $container,
+	) {
+	}
 
 
 	/**

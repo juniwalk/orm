@@ -8,14 +8,14 @@
 namespace JuniWalk\ORM\Utils;
 
 use Doctrine\DBAL\Schema\AbstractAsset;
-use Nette\Utils\Strings;
+use JuniWalk\Utils\Strings;
 
 final class SchemaAssetsFilter
 {
 	private array $assets;
 
 	public function __construct(
-		string ...$assets
+		string ...$assets,
 	) {
 		$this->assets = $assets;
 	}

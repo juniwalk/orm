@@ -7,10 +7,8 @@
 
 namespace JuniWalk\ORM\Entity\Traits;
 
-use BackedEnum;
 use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
-use JsonSerializable;
 use JuniWalk\Utils\Format;
 
 trait Parametrized
@@ -25,7 +23,7 @@ trait Parametrized
 	public function setParam(string $key, mixed $value, bool $overwrite = true): void
 	{
 		if ($value && !$value = Format::scalarize($value)) {
-			throw new InvalidArgumentException('Object instances have to implement JsonSerializable');
+			throw new InvalidArgumentException('Value '.gettype($value).' cannot be scalarized');
 		}
 
 		if (!$overwrite && $this->hasParam($key)) {

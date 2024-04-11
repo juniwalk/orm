@@ -237,7 +237,7 @@ abstract class AbstractRepository
 			$callback = $this->findById(...);
 		}
 
-		if (!Strings::endsWith($field, '[]')) {
+		if (!str_ends_with($field, '[]')) {
 			return $callback($data);
 		}
 
