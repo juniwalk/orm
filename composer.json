@@ -38,7 +38,8 @@
 		"phpstan/extension-installer": "^1.0",
 		"phpstan/phpstan": "^1.0",
 		"phpstan/phpstan-nette": "^1.0",
-		"staabm/phpstan-todo-by": "^0.1"
+		"staabm/phpstan-todo-by": "^0.1",
+		"ublaboo/datagrid": "^6.10"
 	},
 
 	"suggest": {
