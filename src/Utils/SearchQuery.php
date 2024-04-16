@@ -101,6 +101,8 @@ class SearchQuery implements Stringable
 				self::ModifierPartial => self::CharPartial,
 				'<' => null,
 				'>' => null,
+				'(' => null,
+				')' => null,
 				':' => ' ',
 			]);
 		}

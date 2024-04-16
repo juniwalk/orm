@@ -39,6 +39,7 @@ final class SearchQueryTest extends TestCase
 			// Detected issues from production
 			'this:that & '	=> 'this & that*',	// 2024-03-27 -	K2moto (mixed with shit)
 			'a this'		=> 'this*',			// 2024-04-11 - K2moto (starts with [a])
+			'this (them)'	=> 'this & them*',	// 2024-04-16 - Elvis (use of parenthesis)
 		];
 
 		foreach ($matrix as $query => $expect) {
