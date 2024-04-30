@@ -31,8 +31,16 @@ trait Identifier
 	}
 
 
-	public function isNewEntity(): bool
+	public function isPersisted(): bool
 	{
 		return !isset($this->id);
+	}
+
+
+	/** @deprecated */
+	public function isNewEntity(): bool
+	{
+		// trigger_error('Method isNewEntity is deprecated, use isPersisted instead', E_USER_DEPRECATED);
+		return $this->isBrandNew();
 	}
 }
