@@ -7,8 +7,10 @@
 
 namespace JuniWalk\ORM\Entity\Interfaces;
 
+use Ramsey\Uuid\UuidInterface as Uuid;
+
 interface Identified
 {
-	public function getId(): ?int;
+	public function getId(): Uuid|int|string|null;
 	public function isPersisted(): bool;
 }
