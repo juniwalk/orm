@@ -41,6 +41,6 @@ trait Identifier
 	public function isNewEntity(): bool
 	{
 		// trigger_error('Method isNewEntity is deprecated, use isPersisted instead', E_USER_DEPRECATED);
-		return $this->isBrandNew();
+		return $this->isPersisted();
 	}
 }
