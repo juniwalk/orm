@@ -8,15 +8,17 @@
 namespace JuniWalk\ORM\Entity\Traits;
 
 use Doctrine\ORM\Mapping as ORM;
+use JuniWalk\ORM\Entity\Interfaces\Identified;
 
+/**
+ * @phpstan-require-implements Identified
+ */
 trait Identifier
 {
 	#[ORM\Column(type: 'integer', unique: true, nullable: false)]
 	#[ORM\GeneratedValue(strategy: 'IDENTITY')]
 	#[ORM\Id]
-	// ! Cannot be readonly as Doctrine modifies it on remove
-	// ! See doctrine/orm issues #9538 & #9863
-	protected /*readonly*/ int $id;
+	protected int $id;	// ! Cannot be readonly | See doctrine/orm #9538 & #9863
 
 
 	public function getId(): ?int
@@ -40,7 +42,6 @@ trait Identifier
 	/** @deprecated */
 	public function isNewEntity(): bool
 	{
-		// trigger_error('Method isNewEntity is deprecated, use isPersisted instead', E_USER_DEPRECATED);
 		return $this->isPersisted();
 	}
 }
