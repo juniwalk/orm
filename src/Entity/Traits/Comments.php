@@ -11,7 +11,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\ORM\Mapping as ORM;
 use JuniWalk\ORM\Entity\Interfaces\Comment;
+use JuniWalk\ORM\Entity\Interfaces\Commentable;
 
+/**
+ * @phpstan-require-implements Commentable
+ */
 trait Comments
 {
 	#[ORM\ManyToMany(targetEntity: Comment::class, indexBy: 'id', orphanRemoval: true, fetch: 'EXTRA_LAZY')]
@@ -49,6 +53,9 @@ trait Comments
 	}
 
 
+	/**
+	 * @return Comment[]
+	 */
 	public function getComments(): array
 	{
 		return $this->comments->toArray();

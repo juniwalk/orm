@@ -34,6 +34,7 @@ class NetteEntityListenerResolver implements EntityListenerResolver
 
 	/**
 	 * @inheritdoc
+	 * @param  class-string $className
 	 * @throws MissingServiceException
 	 */
 	public function resolve(/*string*/ $className)//: object

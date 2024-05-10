@@ -11,6 +11,6 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 interface Identified
 {
-	public function getId(): Uuid|int|string|null;
+	public function getId(): int|string|Uuid|null;
 	public function isPersisted(): bool;
 }

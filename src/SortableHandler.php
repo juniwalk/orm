@@ -5,7 +5,7 @@
  * @license   MIT License
  */
 
-namespace JuniWalk\ORM\Utils;
+namespace JuniWalk\ORM;
 
 use Closure;
 use JuniWalk\ORM\Entity\Interfaces\Sortable;
@@ -14,11 +14,14 @@ use Ublaboo\DataGrid\DataGrid;
 
 class SortableHandler
 {
-	private ?string $order;
+	private readonly ?string $order;
 
+	/**
+	 * @param Closure(string $column, ?string $sort): Sortable[] $callback
+	 */
 	public function __construct(
 		private readonly string $column,
-		private readonly DataGrid $grid,
+		DataGrid $grid,
 		private readonly Closure $callback,
 	) {
 		$grid->findSessionValues();
@@ -33,7 +36,7 @@ class SortableHandler
 	 */
 	public function sort(int $itemId, ?int $prevId, ?int $nextId): void
 	{
-		[$prevId, $nextId] = match($this->order) {
+		[$prevId, $nextId] = match ($this->order) {
 			'ASC'	=> [$nextId, $prevId],
 			default	=> [$prevId, $nextId],
 		};
@@ -41,8 +44,12 @@ class SortableHandler
 		$items = ($this->callback)($this->column, $this->order);
 		$order = sizeof($items) - 1;
 
-		$hasToMoveDown = $items[$itemId]?->getOrder() >= (int) ($items[$nextId] ?? null)?->getOrder();
-		$hasToMoveUp = $items[$itemId]?->getOrder() <= (int) ($items[$nextId] ?? null)?->getOrder();
+		if (!isset($items[$itemId])) {
+			throw new EntityNotValidException('Item '.$itemId.' is not in the items list.');
+		}
+
+		$hasToMoveDown = $items[$itemId]->getOrder() >= (int) ($items[$nextId] ?? null)?->getOrder();
+		$hasToMoveUp = $items[$itemId]->getOrder() <= (int) ($items[$nextId] ?? null)?->getOrder();
 
 		foreach ($items as $id => $item) {
 			if (!$item instanceof Sortable) {

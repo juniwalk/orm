@@ -9,7 +9,7 @@ namespace JuniWalk\ORM;
 
 use DateTime;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Driver\Exception as DriverException;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -20,6 +20,8 @@ use JuniWalk\ORM\Exceptions\EntityNotFoundException;
 use JuniWalk\Utils\Arrays;
 use JuniWalk\Utils\Strings;
 use Nette\Forms\Form;
+use Nette\Utils\Html;
+use Ramsey\Uuid\UuidInterface as Uuid;
 
 abstract class AbstractRepository
 {
@@ -29,6 +31,8 @@ abstract class AbstractRepository
 
 	protected readonly EntityManager $entityManager;
 	protected readonly Connection $connection;
+
+	/** @var class-string */
 	protected string $entityName;
 
 	/**
@@ -46,6 +50,7 @@ abstract class AbstractRepository
 
 
 	/**
+	 * @return object[]
 	 * @throws NoResultException
 	 */
 	public function getBy(
@@ -60,6 +65,7 @@ abstract class AbstractRepository
 			throw new NoResultException;
 		}
 
+		/** @var object[] */
 		return $result;
 	}
 
@@ -72,15 +78,18 @@ abstract class AbstractRepository
 		$qb = $this->createQueryBuilder(self::DefaultAlias, $indexBy, $where);
 		$qb->setMaxResults(1);
 
-		return $qb->getQuery()
-			->getSingleResult();
+		/** @var object */
+		return $qb->getQuery()->getSingleResult();
 	}
 
 
+	/**
+	 * @return object[]
+	 */
 	public function findBy(
 		callable $where,
 		?int $maxResults = null,
-		string $indexBy = self::DefaultIndexBy,
+		?string $indexBy = self::DefaultIndexBy,
 	): array {
 		try {
 			return $this->getBy($where, $maxResults, $indexBy);
@@ -105,16 +114,14 @@ abstract class AbstractRepository
 	/**
 	 * @throws NoResultException
 	 */
-	public function getById(mixed $id, ?string $indexBy = self::DefaultIndexBy): object
+	public function getById(int|string|Uuid $id, ?string $indexBy = self::DefaultIndexBy): object
 	{
-		$where = fn($qb) => $qb->where(self::DefaultIdentifier.' = :id')
-			->setParameter('id', (int) $id);
-
+		$where = fn($qb) => $qb->where(self::DefaultIdentifier.' = :id')->setParameter('id', $id);
 		return $this->getOneBy($where, $indexBy);
 	}
 
 
-	public function findById(mixed $id, ?string $indexBy = self::DefaultIndexBy): ?object
+	public function findById(int|string|Uuid $id, ?string $indexBy = self::DefaultIndexBy): ?object
 	{
 		try {
 			return $this->getById($id, $indexBy);
@@ -125,6 +132,9 @@ abstract class AbstractRepository
 	}
 
 
+	/**
+	 * @return Html[]
+	 */
 	public function createOptions(
 		callable $where = null,
 		?int $maxResults = null,
@@ -147,6 +157,9 @@ abstract class AbstractRepository
 	}
 
 
+	/**
+	 * @return int|float|array<int|float>
+	 */
 	public function countBy(
 		callable $where,
 		?int $maxResults = null,
@@ -161,14 +174,18 @@ abstract class AbstractRepository
 		$query = $qb->getQuery();
 
 		if ($qb->getMaxResults() === 1) {
+			/** @var int|float */
 			return $query->getSingleScalarResult();
 		}
 
+		/** @var array<int|float> */
 		return $query->getScalarResult();
 	}
 
 
 	/**
+	 * @param object|object[] $result
+	 * @param array<string, string> $columns
 	 * @internal
 	 */
 	public function fetchAssociations(array|object $result, array $columns): void
@@ -199,7 +216,7 @@ abstract class AbstractRepository
 	}
 
 
-	public function createQueryBuilder(string $alias, string $indexBy = null, callable $where = null): QueryBuilder
+	public function createQueryBuilder(string $alias, ?string $indexBy = null, ?callable $where = null): QueryBuilder
 	{
 		$qb = $this->entityManager->createQueryBuilder()->select($alias)
 			->from($this->entityName, $alias, $indexBy);
@@ -212,13 +229,16 @@ abstract class AbstractRepository
 	}
 
 
-	public function createQuery(string $dql = null): Query
+	public function createQuery(string $dql): Query
 	{
 		return $this->entityManager->createQuery($dql);
 	}
 
 
-	public function getReference(mixed $id, string $entityName = null): ?object
+	/**
+	 * @param class-string|null $entityName
+	 */
+	public function getReference(mixed $id, ?string $entityName = null): ?object
 	{
 		if (!$id || !is_numeric($id)) {
 			return null;
@@ -241,14 +261,16 @@ abstract class AbstractRepository
 			return $callback($data);
 		}
 
+		/** @var mixed[]|null $data */
 		return Arrays::walk($data ?? [], fn($id) => yield $id => $callback($id));
 	}
 
 
 	/**
-	 * @throws DBALException
+	 * @param  class-string|null $entityName
+	 * @throws DriverException
 	 */
-	public function createPartition(DateTime $date, string $range, string $entityName = null): string
+	public function createPartition(DateTime $date, string $range, ?string $entityName = null): string
 	{
 		$tableName = $this->getTableName($entityName);
 		$partitionName = $tableName.'_'.$date->format('Ymd');
@@ -263,13 +285,20 @@ abstract class AbstractRepository
 	}
 
 
-	public function truncateTable(bool $cascade = false, string $entityName = null): void
+	/**
+	 * @param  class-string|null $entityName
+	 * @throws DriverException
+	 */
+	public function truncateTable(bool $cascade = false, ?string $entityName = null): void
 	{
 		$this->query('TRUNCATE TABLE '.$this->getTableName($entityName).' RESTART IDENTITY'.($cascade == true ? ' CASCADE' : null));
 	}
 
 
-	public function getTableName(string $entityName = null): string
+	/**
+	 * @param  class-string|null $entityName
+	 */
+	public function getTableName(?string $entityName = null): string
 	{
 		$entityName = $entityName ?: $this->entityName;
 		$metaData = $this->entityManager->getClassMetadata($entityName);
@@ -284,7 +313,7 @@ abstract class AbstractRepository
 
 
 	/**
-	 * @throws DBALException
+	 * @throws DriverException
 	 */
 	private function query(string $query): mixed
 	{

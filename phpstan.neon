@@ -1,5 +1,6 @@
 parameters:
-	level: 1
+	phpVersion: 80200
+	level: 9
 	paths:
 		- src
 		- tests

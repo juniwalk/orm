@@ -8,6 +8,7 @@
 namespace JuniWalk\ORM\Functions;
 
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
+use Doctrine\ORM\Query\AST\InputParameter;
 use Doctrine\ORM\Query\AST\Node;
 use Doctrine\ORM\Query\Lexer;
 use Doctrine\ORM\Query\Parser;
@@ -19,7 +20,7 @@ use Doctrine\ORM\Query\SqlWalker;
 final class Rank extends FunctionNode
 {
 	public Node $column;
-	public Node $query;
+	public InputParameter|string $query;
 	public Node $lang;
 
 

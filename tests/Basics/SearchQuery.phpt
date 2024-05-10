@@ -5,7 +5,7 @@
  * @license   MIT License
  */
 
-use JuniWalk\ORM\Utils\SearchQuery;
+use JuniWalk\ORM\SearchQuery;
 use Tester\Assert;
 use Tester\TestCase;
 

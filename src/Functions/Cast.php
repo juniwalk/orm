@@ -19,8 +19,8 @@ use Doctrine\ORM\Query\SqlWalker;
  */
 final class Cast extends FunctionNode
 {
-	public Node $column;
-	public Node $type;
+	public Node|string $column;
+	public Node|string $type;
 
 
 	public function parse(Parser $parser): void
@@ -42,11 +42,11 @@ final class Cast extends FunctionNode
 
 		switch (true) {
 			case $lexer->isNextToken(Lexer::T_STRING):
-				$this->type = $parser->ScalarExpression(); // (6)
+				$this->type = $parser->StringPrimary(); // (6)
 				break;
 			case $lexer->isNextToken(Lexer::T_IDENTIFIER):
 				$parser->match(Lexer::T_IDENTIFIER);
-				$this->type = new Literal(Literal::STRING, $lexer->token['value']); // (6)
+				$this->type = new Literal(Literal::STRING, $lexer->token['value'] ?? 'varchar'); // (6)
 				break;
 		}
 
@@ -59,7 +59,6 @@ final class Cast extends FunctionNode
 	 */
 	public function getSql(SqlWalker $sqlWalker): string
 	{
-		/** @var Node $value */
 		$column = $sqlWalker->walkSimpleArithmeticExpression($this->column);
 		$type = $sqlWalker->walkSimpleArithmeticExpression($this->type);
 

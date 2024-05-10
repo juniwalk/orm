@@ -8,11 +8,10 @@
 namespace JuniWalk\ORM\Types;
 
 use DateTime;
-use DateTimeInterface;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\Type;
-use Exception;
+use Throwable;
 
 class TimestampTzType extends Type
 {
@@ -32,42 +31,38 @@ class TimestampTzType extends Type
 
 
 	/**
+	 * @param  DateTime|non-empty-string|null $value
 	 * @throws ConversionException
 	 */
-	public function convertToPHPValue($value, AbstractPlatform $platform): ?DateTime
+	public function convertToPHPValue(mixed $value, AbstractPlatform $platform): ?DateTime
 	{
-		if ($value === null || $value instanceof DateTimeInterface) {
+		if (is_null($value) || $value instanceof DateTime) {
 			return $value;
 		}
 
 		try {
-			$datetime = DateTime::createFromFormat(self::Format, $value);
+			return DateTime::createFromFormat(self::Format, $value) ?: new DateTime($value);
 
-		} catch (Exception $e) {
+		} catch (Throwable $e) {
 			throw ConversionException::conversionFailedFormat($value, $this->getName(), self::Format, $e);
 		}
 
-		if (!$datetime && !($datetime = new DateTime($value))) {
-			throw ConversionException::conversionFailedFormat($value, $this->getName(), self::Format);
-		}
-
-		return $datetime;
+		// @phpstan-ignore-next-line
+		throw ConversionException::conversionFailedFormat($value, $this->getName(), self::Format);
 	}
 
 
 	/**
+	 * @param  ?DateTime $value
 	 * @throws ConversionException
 	 */
-	public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
+	public function convertToDatabaseValue(mixed $value, AbstractPlatform $platform): ?string
 	{
-		if (null === $value) {
-			return $value;
+		if (is_null($value) || $value instanceof DateTime) {
+			return $value?->format(self::Format);
 		}
 
-		if ($value instanceof DateTimeInterface) {
-			return $value->format(self::Format);
-		}
-
+		// @phpstan-ignore-next-line
 		throw ConversionException::conversionFailedInvalidType($value, $this->getName(), ['null', 'DateTime']);
 	}
 

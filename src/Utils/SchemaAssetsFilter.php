@@ -12,11 +12,11 @@ use JuniWalk\Utils\Strings;
 
 final class SchemaAssetsFilter
 {
+	/** @var string[] */
 	private array $assets;
 
-	public function __construct(
-		string ...$assets,
-	) {
+	public function __construct(string ...$assets)
+	{
 		$this->assets = $assets;
 	}
 

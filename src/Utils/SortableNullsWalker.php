@@ -33,7 +33,7 @@ class SortableNullsWalker extends SqlWalker
 
 
 	/**
-	 * {@inheritDoc}
+	 * @inheritDoc
 	 */
 	public function walkOrderByItem($orderByItem)
 	{

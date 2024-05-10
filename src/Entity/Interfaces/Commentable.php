@@ -12,5 +12,9 @@ interface Commentable
 	public function addComment(Comment $comment): void;
 	public function removeComment(int $commentId): ?Comment;
 	public function hasComments(): bool;
+
+	/**
+	 * @return Comment[]
+	 */
 	public function getComments(): array;
 }

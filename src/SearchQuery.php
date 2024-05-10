@@ -5,7 +5,7 @@
  * @license   MIT License
  */
 
-namespace JuniWalk\ORM\Utils;
+namespace JuniWalk\ORM;
 
 use Stringable;
 
@@ -43,7 +43,10 @@ class SearchQuery implements Stringable
 
 	public function format(): string
 	{
-		$tokens = preg_split('/\s+/', $this->query);
+		if (!$tokens = preg_split('/\s+/', $this->query)) {
+			$tokens = [];
+		}
+
 		$lastKey = array_key_last($tokens);
 		$method = $this->methodDefault;
 		$output = '';
