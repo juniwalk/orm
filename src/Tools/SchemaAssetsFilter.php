@@ -5,7 +5,7 @@
  * @license   MIT License
  */
 
-namespace JuniWalk\ORM\Utils;
+namespace JuniWalk\ORM\Tools;
 
 use Doctrine\DBAL\Schema\AbstractAsset;
 use JuniWalk\Utils\Strings;

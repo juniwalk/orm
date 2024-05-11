@@ -5,7 +5,7 @@
  * @license   MIT License
  */
 
-namespace JuniWalk\ORM\Utils;
+namespace JuniWalk\ORM\Tools;
 
 use Doctrine\ORM\Mapping\EntityListenerResolver;
 use Nette\DI\Container;
