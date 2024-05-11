@@ -18,6 +18,7 @@ use JuniWalk\ORM\Entity\Interfaces\Commentable;
  */
 trait Comments
 {
+	/** @var Collection<int, Comment> */
 	#[ORM\ManyToMany(targetEntity: Comment::class, indexBy: 'id', orphanRemoval: true, fetch: 'EXTRA_LAZY')]
 	#[ORM\OrderBy(['created' => 'DESC'])]
 	protected Collection $comments;

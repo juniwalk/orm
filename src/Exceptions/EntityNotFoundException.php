@@ -11,10 +11,13 @@ final class EntityNotFoundException extends \RuntimeException
 {
 	public static function fromEntity(object $entity): static
 	{
-		return static::fromClass(get_class($entity));
+		return static::fromClass($entity::class);
 	}
 
 
+	/**
+	 * @param class-string $entityName
+	 */
 	public static function fromClass(string $entityName): static
 	{
 		return new static('Entity "'.$entityName.'" was not found.');

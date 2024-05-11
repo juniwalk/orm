@@ -17,7 +17,7 @@ use Doctrine\ORM\Query\SqlWalker;
 /**
  * "search" "(" Column, Query, Lang ")"
  */
-class Search extends FunctionNode
+final class Search extends FunctionNode
 {
 	public Node $column;
 	public InputParameter|string $query;

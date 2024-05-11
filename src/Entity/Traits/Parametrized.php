@@ -13,6 +13,7 @@ use JuniWalk\Utils\Format;
 
 trait Parametrized
 {
+	/** @var mixed[] */
 	#[ORM\Column(type: 'json', options: ['jsonb' => true, 'default' => '[]'])]
 	protected array $params = [];
 
@@ -44,6 +45,9 @@ trait Parametrized
 	}
 
 
+	/**
+	 * @return mixed[]
+	 */
 	public function getParams(): array
 	{
 		return $this->params;

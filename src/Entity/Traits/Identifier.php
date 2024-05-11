@@ -21,13 +21,13 @@ trait Identifier
 	protected int $id;	// ! Cannot be readonly | See doctrine/orm #9538 & #9863
 
 
-	public function getId(): ?int
+	public function getId(): mixed
 	{
 		return $this->id ?? null;
 	}
 
 
-	public function __clone()
+	public function __clone(): void
 	{
 		unset($this->id);
 	}
@@ -36,12 +36,5 @@ trait Identifier
 	public function isPersisted(): bool
 	{
 		return !isset($this->id);
-	}
-
-
-	/** @deprecated */
-	public function isNewEntity(): bool
-	{
-		return $this->isPersisted();
 	}
 }

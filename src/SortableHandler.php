@@ -48,8 +48,8 @@ class SortableHandler
 			throw new EntityNotValidException('Item '.$itemId.' is not in the items list.');
 		}
 
-		$hasToMoveDown = $items[$itemId]->getOrder() >= (int) ($items[$nextId] ?? null)?->getOrder();
-		$hasToMoveUp = $items[$itemId]->getOrder() <= (int) ($items[$nextId] ?? null)?->getOrder();
+		$moveDown = $items[$itemId]->getOrder() >= (int) ($items[$nextId] ?? null)?->getOrder();
+		$moveUp = $items[$itemId]->getOrder() <= (int) ($items[$nextId] ?? null)?->getOrder();
 
 		foreach ($items as $id => $item) {
 			if (!$item instanceof Sortable) {
@@ -60,13 +60,13 @@ class SortableHandler
 				continue;
 			}
 
-			if ($id === $nextId && $hasToMoveUp) {
+			if ($id === $nextId && $moveUp) {
 				$items[$itemId]->setOrder($order--);
 			}
 
 			$item->setOrder($order--);
 
-			if ($id === $prevId && $hasToMoveDown) {
+			if ($id === $prevId && $moveDown) {
 				$items[$itemId]->setOrder($order--);
 			}
 		}

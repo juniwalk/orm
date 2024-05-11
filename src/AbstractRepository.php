@@ -112,16 +112,20 @@ abstract class AbstractRepository
 
 
 	/**
+	 * @param  int|string|Uuid|null $id
 	 * @throws NoResultException
 	 */
-	public function getById(int|string|Uuid $id, ?string $indexBy = self::DefaultIndexBy): object
+	public function getById(mixed $id, ?string $indexBy = self::DefaultIndexBy): object
 	{
 		$where = fn($qb) => $qb->where(self::DefaultIdentifier.' = :id')->setParameter('id', $id);
 		return $this->getOneBy($where, $indexBy);
 	}
 
 
-	public function findById(int|string|Uuid $id, ?string $indexBy = self::DefaultIndexBy): ?object
+	/**
+	 * @param int|string|Uuid|null $id
+	 */
+	public function findById(mixed $id, ?string $indexBy = self::DefaultIndexBy): ?object
 	{
 		try {
 			return $this->getById($id, $indexBy);
@@ -136,7 +140,7 @@ abstract class AbstractRepository
 	 * @return Html[]
 	 */
 	public function createOptions(
-		callable $where = null,
+		?callable $where = null,
 		?int $maxResults = null,
 		?string $indexBy = self::DefaultIndexBy,
 		?Display $display = null,
@@ -186,9 +190,8 @@ abstract class AbstractRepository
 	/**
 	 * @param object|object[] $result
 	 * @param array<string, string> $columns
-	 * @internal
 	 */
-	public function fetchAssociations(array|object $result, array $columns): void
+	public function fetchAssociations(object|array $result, array $columns): void
 	{
 		if (!is_array($result)) {
 			$result = [$result];
@@ -198,7 +201,7 @@ abstract class AbstractRepository
 			return;
 		}
 
-		$idPartial = Strings::replace(self::DefaultIdentifier, '/([a-z]+)\.(\w+)/i', '$1.{$2}');
+		$idPartial = Strings::replace(self::DefaultIdentifier, '/^([a-z]+)\.(\w+)$/i', '$1.{$2}');
 		$qb = $this->createQueryBuilder(self::DefaultAlias, self::DefaultIndexBy)
 			->select('partial '.$idPartial)->where(self::DefaultAlias.' IN (:rows)');
 
@@ -222,7 +225,7 @@ abstract class AbstractRepository
 			->from($this->entityName, $alias, $indexBy);
 
 		if ($where) {
-			$qb = $where($qb) ?: $qb;
+			$qb = $where($qb) ?? $qb;
 		}
 
 		return $qb;
@@ -236,28 +239,33 @@ abstract class AbstractRepository
 
 
 	/**
+	 * @param int|string|Uuid|null $id
 	 * @param class-string|null $entityName
 	 */
 	public function getReference(mixed $id, ?string $entityName = null): ?object
 	{
-		if (!$id || !is_numeric($id)) {
+		if (is_null($id)) {
 			return null;
 		}
 
-		return $this->entityManager->getReference($entityName ?: $this->entityName, (int) $id);
+		return $this->entityManager->getReference($entityName ?: $this->entityName, $id);
 	}
 
 
-	public function getFormReference(string $field, Form $form, bool $findEagerly = true): mixed
+	/**
+	 * @return object|object[]|null
+	 */
+	public function getFormReference(string $field, Form $form, bool $fetchEagerly = true): mixed
 	{
+		/** @var string|mixed[]|null */
 		$data = $form->getHttpData(Form::DataLine, $field) ?: null;
-		$callback = $this->getReference(...);
-
-		if ($findEagerly) {
-			$callback = $this->findById(...);
-		}
+		$callback = match ($fetchEagerly) {
+			false => $this->getReference(...),
+			default => $this->findById(...),
+		};
 
 		if (!str_ends_with($field, '[]')) {
+			/** @var string|null $data */
 			return $callback($data);
 		}
 

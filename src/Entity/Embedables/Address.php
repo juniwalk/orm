@@ -8,9 +8,10 @@
 namespace JuniWalk\ORM\Entity\Embedables;
 
 use Doctrine\ORM\Mapping as ORM;
+use Stringable;
 
 #[ORM\Embeddable]
-class Address
+class Address implements Stringable
 {
 	#[ORM\Column(type: 'string', length: 64, nullable: true)]
 	protected ?string $street = null;
