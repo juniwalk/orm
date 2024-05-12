@@ -7,6 +7,7 @@
 
 namespace JuniWalk\ORM;
 
+use BadMethodCallException;
 use DateTime;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Exception as DriverException;
@@ -251,22 +252,21 @@ abstract class AbstractRepository
 
 
 	/**
-	 * @throws \Exception
+	 * @throws BadMethodCallException
 	 */
 	public function getFormReference(string $field, Form $form, bool $fetchEagerly = true): ?object
 	{
 		if (str_ends_with($field, '[]')) {
-			throw new \Exception('Call getFormReferences to get list of them.');
+			throw new BadMethodCallException('Call getFormReferences to get list of references.');
 		}
 
 		/** @var string|null */
-		$data = $form->getHttpData(Form::DataLine, $field) ?: null;
-		$callback = match ($fetchEagerly) {
-			false => $this->getReference(...),
-			default => $this->findById(...),
-		};
+		$id = $form->getHttpData(Form::DataLine, $field) ?: null;
 
-		return $callback($data);
+		return match ($fetchEagerly) {
+			false => $this->getReference($id),
+			default => $this->findById($id),
+		};
 	}
 
 
@@ -281,12 +281,11 @@ abstract class AbstractRepository
 
 		/** @var mixed[]|null */
 		$data = $form->getHttpData(Form::DataLine, $field) ?: null;
-		$callback = match ($fetchEagerly) {
-			false => $this->getReference(...),
-			default => $this->findById(...),
-		};
 
-		return Arrays::walk($data ?? [], fn($id) => yield $id => $callback($id));
+		return Arrays::walk($data ?? [], fn($id) => yield $id => match ($fetchEagerly) {
+			false => $this->getReference($id),
+			default => $this->findById($id),
+		});
 	}
 
 
