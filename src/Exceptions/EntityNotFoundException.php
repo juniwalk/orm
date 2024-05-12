@@ -16,10 +16,10 @@ final class EntityNotFoundException extends \RuntimeException
 
 
 	/**
-	 * @param class-string $entityName
+	 * @param class-string|null $entityName
 	 */
-	public static function fromClass(string $entityName): static
+	public static function fromClass(?string $entityName): static
 	{
-		return new static('Entity "'.$entityName.'" was not found.');
+		return new static('Entity "'.($entityName ?? 'undefined').'" was not found.');
 	}
 }

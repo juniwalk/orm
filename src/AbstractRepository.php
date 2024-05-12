@@ -44,7 +44,7 @@ abstract class AbstractRepository
 		$this->entityManager = $entityManager;
 
 		if (!isset($this->entityName) || !class_exists($this->entityName)) {
-			throw EntityNotFoundException::fromClass($this->entityName ?? 'undefined');
+			throw EntityNotFoundException::fromClass($this->entityName ?? null);
 		}
 	}
 
@@ -253,23 +253,41 @@ abstract class AbstractRepository
 
 
 	/**
-	 * @return object|object[]|null
+	 * @throws \Exception
 	 */
-	public function getFormReference(string $field, Form $form, bool $fetchEagerly = true): mixed
+	public function getFormReference(string $field, Form $form, bool $fetchEagerly = true): ?object
 	{
-		/** @var string|mixed[]|null */
+		if (str_ends_with($field, '[]')) {
+			throw new \Exception('Call getFormReferences to get list of them.');
+		}
+
+		/** @var string|null */
 		$data = $form->getHttpData(Form::DataLine, $field) ?: null;
 		$callback = match ($fetchEagerly) {
 			false => $this->getReference(...),
 			default => $this->findById(...),
 		};
 
+		return $callback($data);
+	}
+
+
+	/**
+	 * @return object[]|null
+	 */
+	public function getFormReferences(string $field, Form $form, bool $fetchEagerly = true): array|null
+	{
 		if (!str_ends_with($field, '[]')) {
-			/** @var string|null $data */
-			return $callback($data);
+			$field .= '[]';
 		}
 
-		/** @var mixed[]|null $data */
+		/** @var mixed[]|null */
+		$data = $form->getHttpData(Form::DataLine, $field) ?: null;
+		$callback = match ($fetchEagerly) {
+			false => $this->getReference(...),
+			default => $this->findById(...),
+		};
+
 		return Arrays::walk($data ?? [], fn($id) => yield $id => $callback($id));
 	}
 
