@@ -162,13 +162,13 @@ abstract class AbstractRepository
 
 
 	/**
-	 * @return int|float|array<int|float>
+	 * @return mixed|mixed[]
 	 */
 	public function countBy(
 		callable $where,
 		?int $maxResults = null,
 		?string $indexBy = self::DefaultIndexBy,
-	): int|float|array {
+	): mixed {
 		$qb = $this->createQueryBuilder(self::DefaultAlias, $indexBy, function($qb) use ($where) {
 			$qb->select('COUNT('.self::DefaultIdentifier.')');
 			return $where($qb) ?? $qb;
@@ -178,11 +178,9 @@ abstract class AbstractRepository
 		$query = $qb->getQuery();
 
 		if ($qb->getMaxResults() === 1) {
-			/** @var int|float */
 			return $query->getSingleScalarResult();
 		}
 
-		/** @var array<int|float> */
 		return $query->getScalarResult();
 	}
 
