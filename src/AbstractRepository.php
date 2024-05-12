@@ -30,11 +30,10 @@ abstract class AbstractRepository
 	public const DefaultIdentifier = 'e.id';
 	public const DefaultIndexBy = self::DefaultIdentifier;
 
-	protected readonly EntityManager $entityManager;
-	protected readonly Connection $connection;
-
 	/** @var class-string */
 	protected string $entityName;
+	protected readonly Connection $connection;
+	protected readonly EntityManager $entityManager;
 
 	/**
 	 * @throws EntityNotFoundException
