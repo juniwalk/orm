@@ -22,7 +22,7 @@ trait Timestamp
 
 	public function setCreated(DateTimeInterface $created): void
 	{
-		$this->created = DateTime::createFromInterface($created);
+		$this->created ??= DateTime::createFromInterface($created);
 	}
 
 
