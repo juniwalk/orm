@@ -21,7 +21,7 @@ trait Identifier
 	protected int $id;	// ! Cannot be readonly | See doctrine/orm #9538 & #9863
 
 
-	public function getId(): mixed
+	public function getId(): ?int
 	{
 		return $this->id ?? null;
 	}

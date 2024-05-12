@@ -22,7 +22,6 @@ use JuniWalk\Utils\Arrays;
 use JuniWalk\Utils\Strings;
 use Nette\Forms\Form;
 use Nette\Utils\Html;
-use Ramsey\Uuid\UuidInterface as Uuid;
 
 abstract class AbstractRepository
 {
@@ -112,7 +111,6 @@ abstract class AbstractRepository
 
 
 	/**
-	 * @param  int|string|Uuid|null $id
 	 * @throws NoResultException
 	 */
 	public function getById(mixed $id, ?string $indexBy = self::DefaultIndexBy): object
@@ -122,9 +120,6 @@ abstract class AbstractRepository
 	}
 
 
-	/**
-	 * @param int|string|Uuid|null $id
-	 */
 	public function findById(mixed $id, ?string $indexBy = self::DefaultIndexBy): ?object
 	{
 		try {
@@ -237,7 +232,6 @@ abstract class AbstractRepository
 
 
 	/**
-	 * @param int|string|Uuid|null $id
 	 * @param class-string|null $entityName
 	 */
 	public function getReference(mixed $id, ?string $entityName = null): ?object
