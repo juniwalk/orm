@@ -245,16 +245,15 @@ abstract class AbstractRepository
 
 
 	/**
-	 * @param  class-string|null $entityName
-	 * @return T|object|null
+	 * @return ?T
 	 */
-	public function getReference(mixed $id, ?string $entityName = null): ?object
+	public function getReference(mixed $id): ?object
 	{
 		if (is_null($id)) {
 			return null;
 		}
 		
-		return $this->entityManager->getReference($entityName ?: $this->entityName, $id);
+		return $this->entityManager->getReference($this->entityName, $id);
 	}
 	
 	
