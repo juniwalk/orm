@@ -23,13 +23,18 @@ use JuniWalk\Utils\Strings;
 use Nette\Forms\Form;
 use Nette\Utils\Html;
 
+/**
+ * @template T of object
+ */
 abstract class AbstractRepository
 {
 	public const DefaultAlias = 'e';
 	public const DefaultIdentifier = 'e.id';
 	public const DefaultIndexBy = self::DefaultIdentifier;
 
-	/** @var class-string */
+	/**
+	 * @var class-string<T>
+	 */
 	protected string $entityName;
 	protected readonly Connection $connection;
 	protected readonly EntityManager $entityManager;
@@ -49,7 +54,7 @@ abstract class AbstractRepository
 
 
 	/**
-	 * @return object[]
+	 * @return T[]
 	 * @throws NoResultException
 	 */
 	public function getBy(
@@ -64,12 +69,13 @@ abstract class AbstractRepository
 			throw new NoResultException;
 		}
 
-		/** @var object[] */
+		/** @var T[] */
 		return $result;
 	}
 
 
 	/**
+	 * @return T
 	 * @throws NoResultException
 	 */
 	public function getOneBy(callable $where, ?string $indexBy = self::DefaultIndexBy): object
@@ -77,13 +83,13 @@ abstract class AbstractRepository
 		$qb = $this->createQueryBuilder(self::DefaultAlias, $indexBy, $where);
 		$qb->setMaxResults(1);
 
-		/** @var object */
+		/** @var T */
 		return $qb->getQuery()->getSingleResult();
 	}
 
 
 	/**
-	 * @return object[]
+	 * @return T[]
 	 */
 	public function findBy(
 		callable $where,
@@ -99,6 +105,9 @@ abstract class AbstractRepository
 	}
 
 
+	/**
+	 * @return ?T
+	 */
 	public function findOneBy(callable $where, ?string $indexBy = self::DefaultIndexBy): ?object
 	{
 		try {
@@ -111,6 +120,7 @@ abstract class AbstractRepository
 
 
 	/**
+	 * @return T
 	 * @throws NoResultException
 	 */
 	public function getById(mixed $id, ?string $indexBy = self::DefaultIndexBy): object
@@ -120,6 +130,9 @@ abstract class AbstractRepository
 	}
 
 
+	/**
+	 * @return ?T
+	 */
 	public function findById(mixed $id, ?string $indexBy = self::DefaultIndexBy): ?object
 	{
 		try {
@@ -232,19 +245,21 @@ abstract class AbstractRepository
 
 
 	/**
-	 * @param class-string|null $entityName
+	 * @param  class-string|null $entityName
+	 * @return T|object|null
 	 */
 	public function getReference(mixed $id, ?string $entityName = null): ?object
 	{
 		if (is_null($id)) {
 			return null;
 		}
-
+		
 		return $this->entityManager->getReference($entityName ?: $this->entityName, $id);
 	}
-
-
+	
+	
 	/**
+	 * @return T|null
 	 * @throws BadMethodCallException
 	 */
 	public function getFormReference(string $field, Form $form, bool $fetchEagerly = true): ?object
@@ -252,19 +267,19 @@ abstract class AbstractRepository
 		if (str_ends_with($field, '[]')) {
 			throw new BadMethodCallException('Call getFormReferences to get list of references.');
 		}
-
+		
 		/** @var string|null */
 		$id = $form->getHttpData(Form::DataLine, $field) ?: null;
-
+		
 		return match ($fetchEagerly) {
 			false => $this->getReference($id),
 			default => $this->findById($id),
 		};
 	}
-
-
+	
+	
 	/**
-	 * @return object[]|null
+	 * @return T[]|null
 	 */
 	public function getFormReferences(string $field, Form $form, bool $fetchEagerly = true): array|null
 	{
