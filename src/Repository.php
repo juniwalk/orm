@@ -187,7 +187,7 @@ abstract class Repository
 
 
 	/**
-	 * @param object|object[] $result
+	 * @param T|T[] $result
 	 * @param array<string, string> $columns
 	 */
 	public function fetchAssociations(object|array $result, array $columns): void
@@ -202,7 +202,7 @@ abstract class Repository
 
 		$idPartial = Strings::replace(self::DefaultIdentifier, '/^([a-z]+)\.(\w+)$/i', '$1.{$2}');
 		$qb = $this->createQueryBuilder(self::DefaultAlias, self::DefaultIndexBy)
-			->select('partial '.$idPartial)->where(self::DefaultAlias.' IN (:rows)');
+			->select('partial '.$idPartial)->where(self::DefaultAlias.' IN (:items)');
 
 		foreach ($columns as $alias => $column) {
 			$qb->leftJoin($column, $alias)->addSelect($alias);
@@ -210,7 +210,7 @@ abstract class Repository
 
 		try {
 			$qb->getQuery()
-				->setParameter('rows', $result)
+				->setParameter('items', $result)
 				->getResult();
 
 		} catch (NoResultException) {
