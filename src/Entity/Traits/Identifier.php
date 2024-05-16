@@ -8,7 +8,8 @@
 namespace JuniWalk\ORM\Entity\Traits;
 
 use Doctrine\ORM\Mapping as ORM;
-use JuniWalk\ORM\Entity\Interfaces\Identified;
+use JuniWalk\ORM\Entity\Interfaces\Identified;	// ! Used for @phpstan
+use JuniWalk\ORM\Exceptions\EntityNotPersistedException;
 
 /**
  * @phpstan-require-implements Identified
@@ -21,9 +22,16 @@ trait Identifier
 	protected int $id;	// ! Cannot be readonly | See doctrine/orm #9538 & #9863
 
 
-	public function getId(): ?int
+	/**
+	 * @throws EntityNotPersistedException
+	 */
+	public function getId(): int
 	{
-		return $this->id ?? null;
+		if (!$this->isPersisted()) {
+			throw EntityNotPersistedException::fromEntity($this);
+		}
+
+		return $this->id;
 	}
 
 
