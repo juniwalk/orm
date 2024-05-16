@@ -271,18 +271,18 @@ abstract class Repository
 	
 	
 	/**
-	 * @return T[]|null
+	 * @return T[]
 	 */
-	public function getFormReferences(string $field, Form $form, bool $fetchEagerly = true): array|null
+	public function getFormReferences(string $field, Form $form, bool $fetchEagerly = true): array
 	{
 		if (!str_ends_with($field, '[]')) {
 			$field .= '[]';
 		}
 
-		/** @var mixed[]|null */
-		$data = $form->getHttpData(Form::DataLine, $field) ?: null;
+		/** @var mixed[] */
+		$data = $form->getHttpData(Form::DataLine, $field) ?? [];
 
-		return Arrays::walk($data ?? [], fn($id) => yield $id => match ($fetchEagerly) {
+		return Arrays::walk($data, fn($id) => yield $id => match ($fetchEagerly) {
 			false => $this->getReference($id),
 			default => $this->findById($id),
 		});
