@@ -35,6 +35,12 @@ trait Identifier
 	}
 
 
+	public function findId(): ?int
+	{
+		return $this->id ?? null;
+	}
+
+
 	public function __clone(): void
 	{
 		unset($this->id);
