@@ -238,7 +238,7 @@ abstract class Repository
 
 
 	/**
-	 * @return ?T
+	 * @return ($id is null ? null : T)
 	 */
 	public function getReference(mixed $id): ?object
 	{
