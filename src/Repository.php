@@ -190,7 +190,7 @@ abstract class Repository
 	 * @param T|T[] $result
 	 * @param array<string, string> $columns
 	 */
-	public function fetchAssociations(object|array $result, array $columns): void
+	public function fetchAssociations(object|array|null $result, array $columns): void
 	{
 		if (!is_array($result)) {
 			$result = [$result];
