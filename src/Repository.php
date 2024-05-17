@@ -25,9 +25,9 @@ use Nette\Utils\Html;
  */
 abstract class Repository
 {
-	public const DefaultAlias = 'e';
 	public const DefaultIdentifier = 'e.id';
 	public const DefaultIndexBy = self::DefaultIdentifier;
+	public const DefaultAlias = 'e';
 
 	/** @var class-string<T> */
 	protected string $entityName;
@@ -242,7 +242,7 @@ abstract class Repository
 	 */
 	public function getReference(mixed $id): ?object
 	{
-		if (is_null($id)) {
+		if (empty($id)) {
 			return null;
 		}
 		
