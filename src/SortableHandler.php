@@ -34,7 +34,7 @@ class SortableHandler
 	/**
 	 * @throws EntityNotValidException
 	 */
-	public function sort(int $itemId, ?int $prevId, ?int $nextId): void
+	public function sort(?int $itemId, ?int $prevId, ?int $nextId): void
 	{
 		[$prevId, $nextId] = match ($this->order) {
 			'ASC'	=> [$nextId, $prevId],
