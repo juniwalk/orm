@@ -29,6 +29,9 @@ final class SearchQueryTest extends TestCase
 	}
 
 
+	/**
+	 * @return iterable<array{query: string, expect: string}>
+	 */
 	public function argumentMatrix(): iterable
 	{
 		static $matrix = [
