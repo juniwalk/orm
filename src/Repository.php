@@ -118,6 +118,10 @@ abstract class Repository
 	 */
 	public function getById(mixed $id, ?string $indexBy = self::DefaultIndexBy): object
 	{
+		if (empty($id) || !is_scalar($id)) {
+			$id = null;
+		}
+
 		$where = fn($qb) => $qb->where(self::DefaultIdentifier.' = :id')->setParameter('id', $id);
 		return $this->getOneBy($where, $indexBy);
 	}
