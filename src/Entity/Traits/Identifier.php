@@ -44,6 +44,6 @@ trait Identifier
 
 	public function isPersisted(): bool
 	{
-		return !isset($this->id);
+		return isset($this->id);
 	}
 }
