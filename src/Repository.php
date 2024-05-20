@@ -19,6 +19,7 @@ use JuniWalk\Utils\Arrays;
 use JuniWalk\Utils\Strings;
 use Nette\Forms\Form;
 use Nette\Utils\Html;
+use Throwable;
 
 /**
  * @template T of object
@@ -123,7 +124,14 @@ abstract class Repository
 		}
 
 		$where = fn($qb) => $qb->where(self::DefaultIdentifier.' = :id')->setParameter('id', $id);
-		return $this->getOneBy($where, $indexBy);
+
+		try {
+			return $this->getOneBy($where, $indexBy);
+
+		} catch (Throwable) {
+			// TODO: This is kind of sus, I want to add $previous exception
+			throw new NoResultException;
+		}
 	}
 
 
@@ -135,7 +143,7 @@ abstract class Repository
 		try {
 			return $this->getById($id, $indexBy);
 
-		} catch (NoResultException) {
+		} catch (Throwable) {
 			return null;
 		}
 	}
