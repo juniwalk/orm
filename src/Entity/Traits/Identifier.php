@@ -28,7 +28,7 @@ trait Identifier
 	 */
 	public function getId(bool $require = false): ?int
 	{
-		if ($require && !$this->isPersisted()) {
+		if ($require && $this->isNotPersisted()) {
 			throw EntityNotPersistedException::fromEntity($this);
 		}
 
@@ -42,8 +42,17 @@ trait Identifier
 	}
 
 
+	public function isNotPersisted(): bool
+	{
+		return !isset($this->id);
+	}
+
+
+	/**
+	 * @deprecated
+	 */
 	public function isPersisted(): bool
 	{
-		return isset($this->id);
+		return !$this->isNotPersisted();
 	}
 }
