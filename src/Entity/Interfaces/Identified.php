@@ -10,5 +10,10 @@ namespace JuniWalk\ORM\Entity\Interfaces;
 interface Identified
 {
 	public function getId(): mixed;
+	public function isNotPersisted(): bool;
+
+	/**
+	 * @deprecated
+	 */
 	public function isPersisted(): bool;
 }
