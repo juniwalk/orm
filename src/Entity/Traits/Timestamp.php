@@ -16,8 +16,8 @@ trait Timestamp
 	#[ORM\Column(type: 'datetimetz', options: ['default' => 'CURRENT_TIMESTAMP'])]
 	protected readonly DateTime $created;
 
-	#[ORM\Column(type: 'datetimetz', nullable: true)]
-	protected ?DateTime $modified = null;
+	#[ORM\Column(type: 'datetimetz')]
+	protected DateTime $modified;
 
 
 	public function setCreated(DateTimeInterface $created): void
@@ -32,26 +32,21 @@ trait Timestamp
 	}
 
 
-	public function setModified(?DateTimeInterface $modified): void
+	public function setModified(DateTimeInterface $modified): void
 	{
-		if (!is_null($modified)) {
-			$modified = DateTime::createFromInterface($modified);
-		}
-
-		$this->modified = $modified ?? new DateTime;
+		$this->modified = DateTime::createFromInterface($modified);
 	}
 
 
-	public function getModified(): ?DateTime
+	public function getModified(): DateTime
 	{
-		if (!$this->modified) {
-			return null;
-		}
-
 		return clone $this->modified;
 	}
 
 
+	/**
+	 * @deprecated
+	 */
 	public function getTimestamp(): DateTime
 	{
 		return clone ($this->modified ?: $this->created);
@@ -62,6 +57,7 @@ trait Timestamp
 	public function onCreated(): void
 	{
 		$this->created ??= new DateTime;
+		$this->modified = new DateTime;
 	}
 
 
