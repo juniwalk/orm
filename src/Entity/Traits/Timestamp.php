@@ -16,7 +16,7 @@ trait Timestamp
 	#[ORM\Column(type: 'datetimetz', options: ['default' => 'CURRENT_TIMESTAMP'])]
 	protected readonly DateTime $created;
 
-	#[ORM\Column(type: 'datetimetz')]
+	#[ORM\Column(type: 'datetimetz', options: ['default' => 'CURRENT_TIMESTAMP'])]
 	protected DateTime $modified;
 
 
