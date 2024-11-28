@@ -7,10 +7,7 @@
 
 namespace JuniWalk\ORM\Entity\Traits;
 
-use BadMethodCallException;
 use Doctrine\ORM\Mapping as ORM;
-use JsonSerializable;
-use Stringable;
 
 trait Hashable
 {
@@ -18,36 +15,19 @@ trait Hashable
 	protected ?string $hash = null;
 
 
-	/**
-	 * @throws BadMethodCallException
-	 */
-	final public function setHash(?string $hash): void
+	final public function getHash(): string
 	{
-		throw new BadMethodCallException('Setting hash is not allowed');
+		return $this->hash ?? $this->createHash();
 	}
 
 
-	public function getHash(): string
-	{
-		return $this->hash ?? $this->createUniqueHash();
-	}
-
-
-	/**
-	 * @throws BadMethodCallException
-	 */
 	#[ORM\PreFlush]
-	public function createUniqueHash(): string
+	final public function createHash(): string
 	{
-		$hash = match (true) {
-			$this instanceof JsonSerializable	=> json_encode($this);
-			$this instanceof Stringable			=> strval($this),
-
-			default => throw new BadMethodCallException(
-				'Entity has to implement "Stringable|JsonSerializable" or use custom "'.__FUNCTION__.'" method'
-			);
-		}
-
+		$hash = serialize($this->createHashParams());
 		return $this->hash = substr(sha1($hash), 0, 8);
 	}
+
+
+	abstract protected function createHashParams(): mixed;
 }
