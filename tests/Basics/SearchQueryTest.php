@@ -9,7 +9,7 @@ use JuniWalk\ORM\SearchQuery;
 use Tester\Assert;
 use Tester\TestCase;
 
-require '../bootstrap.php';
+require __DIR__.'/../bootstrap.php';
 
 /**
  * @testCase
