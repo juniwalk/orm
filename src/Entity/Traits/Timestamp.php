@@ -44,15 +44,6 @@ trait Timestamp
 	}
 
 
-	/**
-	 * @deprecated
-	 */
-	public function getTimestamp(): DateTime
-	{
-		return clone ($this->modified ?: $this->created);
-	}
-
-
 	#[ORM\PrePersist]
 	public function onCreated(): void
 	{

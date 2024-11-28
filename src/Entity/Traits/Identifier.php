@@ -46,13 +46,4 @@ trait Identifier
 	{
 		return !isset($this->id);
 	}
-
-
-	/**
-	 * @deprecated
-	 */
-	public function isPersisted(): bool
-	{
-		return !$this->isNotPersisted();
-	}
 }
