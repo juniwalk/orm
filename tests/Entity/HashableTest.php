@@ -27,7 +27,7 @@ final class HashableTest extends TestCase
 			}
 		};
 
-		Assert::same('ddfbbcb5', $entity->getHash());
+		Assert::same('bef911fb', $entity->getHash());
 	}
 
 

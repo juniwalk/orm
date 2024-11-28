@@ -24,7 +24,12 @@ trait Hashable
 	#[ORM\PreFlush]
 	final public function createHash(): string
 	{
-		$hash = serialize($this->createHashParams());
+		$hash = $this->createHashParams();
+
+		if (!is_string($hash)) {
+			$hash = serialize($hash);
+		}
+
 		return $this->hash = substr(sha1($hash), 0, 8);
 	}
 
