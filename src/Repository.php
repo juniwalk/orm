@@ -266,7 +266,7 @@ abstract class Repository
 	 * @return T|null
 	 * @throws BadMethodCallException
 	 */
-	public function getFormReference(string $field, Form $form, bool $fetchEagerly = true): ?object
+	public function findFormReference(string $field, Form $form): ?object
 	{
 		if (str_ends_with($field, '[]')) {
 			throw new BadMethodCallException('Call getFormReferences to get list of references.');
@@ -275,17 +275,31 @@ abstract class Repository
 		/** @var string|null */
 		$id = $form->getHttpData(Form::DataLine, $field) ?: null;
 
-		return match ($fetchEagerly) {
-			false => $this->getReference($id),
-			default => $this->findById($id),
-		};
+		return $this->findById($id);
+	}
+
+
+	/**
+	 * @return T
+	 * @throws BadMethodCallException
+	 */
+	public function getFormReference(string $field, Form $form): object
+	{
+		if (str_ends_with($field, '[]')) {
+			throw new BadMethodCallException('Call getFormReferences to get list of references.');
+		}
+
+		/** @var string|null */
+		$id = $form->getHttpData(Form::DataLine, $field) ?: null;
+
+		return $this->getById($id);
 	}
 
 
 	/**
 	 * @return T[]
 	 */
-	public function getFormReferences(string $field, Form $form, bool $fetchEagerly = true): array
+	public function getFormReferences(string $field, Form $form): array
 	{
 		if (!str_ends_with($field, '[]')) {
 			$field .= '[]';
@@ -294,9 +308,6 @@ abstract class Repository
 		/** @var mixed[] */
 		$data = $form->getHttpData(Form::DataLine, $field) ?? [];
 
-		return Arrays::walk($data, fn($id) => yield $id => match ($fetchEagerly) {
-			false => $this->getReference($id),
-			default => $this->findById($id),
-		});
+		return Arrays::walk($data, fn($id) => yield $id => $this->getById($id));
 	}
 }
