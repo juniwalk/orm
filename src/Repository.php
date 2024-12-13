@@ -282,6 +282,7 @@ abstract class Repository
 	/**
 	 * @return T
 	 * @throws BadMethodCallException
+	 * @throws EntityNotFoundException
 	 */
 	public function getFormReference(string $field, Form $form): object
 	{
@@ -292,7 +293,12 @@ abstract class Repository
 		/** @var string|null */
 		$id = $form->getHttpData(Form::DataLine, $field) ?: null;
 
-		return $this->getById($id);
+		try {
+			return $this->getById($id);
+
+		} catch (NoResultException $e) {
+			throw EntityNotFoundException::fromField($field, $id, $e);
+		}
 	}
 
 
