@@ -7,19 +7,61 @@
 
 namespace JuniWalk\ORM\Exceptions;
 
+use JuniWalk\ORM\Entity\Interfaces\Identified;
+use Throwable;
+
 final class EntityNotFoundException extends \RuntimeException
 {
-	public static function fromEntity(object $entity): static
+	private string $entityName;
+	private mixed $id;
+
+
+	public static function fromField(string $field, mixed $id, ?Throwable $previous = null): self
 	{
-		return static::fromClass($entity::class);
+		$self = new self('Entity in form field "'.$field.'" with id "'.$id.'" was not found.', previous: $previous);
+		$self->entityName = $field;
+		$self->id = $id;
+
+		return $self;
+	}
+
+
+	public static function fromEntity(object $entity, mixed $id = null): static
+	{
+		if ($entity instanceof Identified) {
+			$id = $entity->getId();
+		}
+
+		return static::fromClass($entity::class, $id);
 	}
 
 
 	/**
 	 * @param class-string|null $entityName
 	 */
-	public static function fromClass(?string $entityName): static
+	public static function fromClass(?string $entityName, mixed $id = null): static
 	{
-		return new static('Entity "'.($entityName ?? 'undefined').'" was not found.');
+		$entityName ??= 'unknown';
+
+		$self = new static('Entity "'.$entityName.'" was not found.');
+		$self->entityName = $entityName;
+		$self->id = $id;
+
+		return $self;
+	}
+
+
+	/**
+	 * @return string|class-string
+	 */
+	public function getEntityName(): string
+	{
+		return $this->entityName;
+	}
+
+
+	public function getId(): mixed
+	{
+		return $this->id;
 	}
 }
