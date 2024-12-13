@@ -257,11 +257,11 @@ abstract class Repository
 		if (empty($id)) {
 			return null;
 		}
-		
+
 		return $this->entityManager->getReference($this->entityName, $id);
 	}
-	
-	
+
+
 	/**
 	 * @return T|null
 	 * @throws BadMethodCallException
@@ -271,17 +271,17 @@ abstract class Repository
 		if (str_ends_with($field, '[]')) {
 			throw new BadMethodCallException('Call getFormReferences to get list of references.');
 		}
-		
+
 		/** @var string|null */
 		$id = $form->getHttpData(Form::DataLine, $field) ?: null;
-		
+
 		return match ($fetchEagerly) {
 			false => $this->getReference($id),
 			default => $this->findById($id),
 		};
 	}
-	
-	
+
+
 	/**
 	 * @return T[]
 	 */
