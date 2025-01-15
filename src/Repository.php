@@ -119,8 +119,9 @@ abstract class Repository
 	 */
 	public function getById(mixed $id, ?string $indexBy = self::DefaultIndexBy): object
 	{
+		// TODO: Might need to allow Uuid for example
 		if (empty($id) || !is_scalar($id)) {
-			$id = null;
+			throw new NoResultException;
 		}
 
 		$where = fn($qb) => $qb->where(self::DefaultIdentifier.' = :id')->setParameter('id', $id);
@@ -128,6 +129,7 @@ abstract class Repository
 		try {
 			return $this->getOneBy($where, $indexBy);
 
+		// TODO: Do not catch whole Throwable !!!
 		} catch (Throwable) {
 			// TODO: This is kind of sus, I want to add $previous exception
 			throw new NoResultException;
@@ -143,6 +145,7 @@ abstract class Repository
 		try {
 			return $this->getById($id, $indexBy);
 
+		// TODO: Do not catch whole Throwable !!!
 		} catch (Throwable) {
 			return null;
 		}
