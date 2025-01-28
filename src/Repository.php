@@ -178,6 +178,7 @@ abstract class Repository
 
 
 	/**
+	 * return ($maxResults is 1 ? mixed : mixed[])
 	 * @return mixed|mixed[]
 	 */
 	public function countBy(
