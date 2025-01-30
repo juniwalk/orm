@@ -44,10 +44,12 @@
 		"phpstan/phpstan": "^1.0",
 		"phpstan/phpstan-nette": "^1.0",
 		"staabm/phpstan-todo-by": "^0.1",
+		"symfony/property-access": "^7.0",
 		"ublaboo/datagrid": "^6.10"
 	},
 
 	"suggest": {
-		"nette/forms": "Needed for entity reference from form input."
+		"nette/forms": "Needed for entity reference from form input.",
+		"symfony/property-access": "Needed for ParamsStructured trait."
 	}
 }

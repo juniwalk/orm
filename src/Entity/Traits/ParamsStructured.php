@@ -11,9 +11,14 @@ use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
 use JuniWalk\Utils\Arrays;
 use JuniWalk\Utils\Format;
+use LogicException;
+use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 trait ParamsStructured
 {
+	private PropertyAccessor $__accessor;
+
 	/** @var mixed[] */
 	#[ORM\Column(type: 'json', options: ['jsonb' => true, 'default' => '[]'])]
 	protected array $params = [];
@@ -22,32 +27,32 @@ trait ParamsStructured
 	/**
 	 * @throws InvalidArgumentException
 	 */
-	public function setParam(string $key, mixed $value, bool $overwrite = true): void
+	public function setParam(string $key, mixed $value): void
 	{
 		if ($value && !$value = Format::scalarize($value)) {
 			throw new InvalidArgumentException('Value '.gettype($value).' cannot be scalarized');
 		}
 
-		$params = Arrays::flatten($this->params);
-
-		if (!$overwrite && isset($params[$key])) {
-			return;
-		}
-
-		$params[$key] = $value;
+		$this->__accessor()->setValue(
+			$this->params,
+			$this->__path($key),
+			$value,
+		);
 
 		if (is_null($value)) {
+			$params = Arrays::flatten($this->params);
 			unset($params[$key]);
+			$this->params = Arrays::unflatten($params);
 		}
-
-		$this->params = Arrays::unflatten($params);
 	}
 
 
 	public function getParam(string $key): mixed
 	{
-		$params = Arrays::flatten($this->params);
-		return $params[$key] ?? null;
+		return $this->__accessor()->getValue(
+			$this->params,
+			$this->__path($key),
+		);
 	}
 
 
@@ -57,5 +62,24 @@ trait ParamsStructured
 	public function getParams(): array
 	{
 		return $this->params;
+	}
+
+
+	/**
+	 * @throws LogicException
+	 */
+	private function __accessor(): PropertyAccessor
+	{
+		if (!isset($this->__accessor) && !class_exists(PropertyAccessor::class)) {
+			throw new LogicException('Missing symfony/property-access package.');
+		}
+
+		return $this->__accessor ??= PropertyAccess::createPropertyAccessor();
+	}
+
+
+	private function __path(string $key): string
+	{
+		return '['.str_replace('.', '][', $key).']';
 	}
 }

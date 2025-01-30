@@ -51,6 +51,25 @@ final class ParamsTest extends TestCase
 		Assert::same('2024-01-01T00:00:00+00:00', $entity->getParam('contract.expire'));
 		Assert::same($params, $entity->getParams());
 	}
+
+
+	public function testParams_Structured_Partial(): void
+	{
+		$params = [
+			'contract'	=> [ 'overwrite' => true],
+			'person'	=> [
+				'birth' => ['place' => 'Prague', 'number' => 123456],
+			],
+		];
+
+		$entity = new class { use ParamsStructured; };
+		$entity->setParam('contract', ['overwrite' => true]);
+		$entity->setParam('person.birth', ['place' => 'Brno', 'number' => 123456]);
+		$entity->setParam('person.birth.place', 'Prague');
+
+		Assert::same(['overwrite' => true], $entity->getParam('contract'));
+		Assert::same($params, $entity->getParams());
+	}
 }
 
 (new ParamsTest)->run();
