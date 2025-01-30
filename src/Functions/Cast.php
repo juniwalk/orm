@@ -46,7 +46,7 @@ final class Cast extends FunctionNode
 				break;
 			case $lexer->isNextToken(Lexer::T_IDENTIFIER):
 				$parser->match(Lexer::T_IDENTIFIER);
-				$this->type = new Literal(Literal::STRING, $lexer->token['value'] ?? 'varchar'); // (6)
+				$this->type = new Literal(Literal::STRING, $lexer->token->value ?? 'varchar'); // (6)
 				break;
 		}
 
