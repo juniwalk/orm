@@ -203,7 +203,7 @@ abstract class Repository
 
 
 	/**
-	 * @param T|T[] $result
+	 * @param T|T[]|mixed[] $result
 	 * @param array<string, string> $columns
 	 */
 	public function fetchAssociations(object|array|null $result, array $columns): void
