@@ -69,10 +69,11 @@ class TableManager
 
 
 	/**
+	 * @return int|numeric-string
 	 * @throws DriverException
 	 */
-	private function execute(string $query): mixed
+	private function execute(string $query): int|string
 	{
-		return $this->connection->query($query);
+		return $this->connection->executeStatement($query);
 	}
 }

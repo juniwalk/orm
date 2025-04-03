@@ -9,7 +9,8 @@ namespace JuniWalk\ORM\Types;
 
 use DateTime;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Types\ConversionException;
+use Doctrine\DBAL\Types\Exception\InvalidFormat;
+use Doctrine\DBAL\Types\Exception\InvalidType;
 use Doctrine\DBAL\Types\Type;
 use Throwable;
 
@@ -32,7 +33,7 @@ class TimestampTzType extends Type
 
 	/**
 	 * @param  DateTime|non-empty-string|null $value
-	 * @throws ConversionException
+	 * @throws InvalidFormat
 	 */
 	public function convertToPHPValue(mixed $value, AbstractPlatform $platform): ?DateTime
 	{
@@ -44,16 +45,13 @@ class TimestampTzType extends Type
 			return DateTime::createFromFormat(self::Format, $value) ?: new DateTime($value);
 
 		} catch (Throwable $e) {
-			throw ConversionException::conversionFailedFormat($value, $this->getName(), self::Format, $e);
+			throw InvalidFormat::new($value, $this->getName(), self::Format, $e);
 		}
-
-		// @phpstan-ignore-next-line
-		throw ConversionException::conversionFailedFormat($value, $this->getName(), self::Format);
 	}
 
 
 	/**
-	 * @throws ConversionException
+	 * @throws InvalidType
 	 */
 	public function convertToDatabaseValue(mixed $value, AbstractPlatform $platform): ?string
 	{
@@ -61,7 +59,7 @@ class TimestampTzType extends Type
 			return $value?->format(self::Format);
 		}
 
-		throw ConversionException::conversionFailedInvalidType($value, $this->getName(), ['null', 'DateTime']);
+		throw InvalidType::new($value, $this->getName(), ['null', 'DateTime']);
 	}
 
 

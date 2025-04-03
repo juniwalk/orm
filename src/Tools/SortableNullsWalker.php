@@ -8,6 +8,7 @@
 namespace JuniWalk\ORM\Tools;
 
 use Doctrine\ORM\Query\AST\PathExpression;
+use Doctrine\ORM\Query\AST\OrderByItem;
 use Doctrine\ORM\Query\SqlWalker;
 
 /**
@@ -35,7 +36,7 @@ class SortableNullsWalker extends SqlWalker
 	/**
 	 * @inheritDoc
 	 */
-	public function walkOrderByItem($orderByItem)
+	public function walkOrderByItem(OrderByItem $orderByItem): string
 	{
 		$hint = $this->getQuery()->getHint(self::FIELDS_KEY);
 		$sql = parent::walkOrderByItem($orderByItem);

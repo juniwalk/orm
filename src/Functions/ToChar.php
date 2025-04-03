@@ -9,9 +9,9 @@ namespace JuniWalk\ORM\Functions;
 
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
 use Doctrine\ORM\Query\AST\Node;
-use Doctrine\ORM\Query\Lexer;
 use Doctrine\ORM\Query\Parser;
 use Doctrine\ORM\Query\SqlWalker;
+use Doctrine\ORM\Query\TokenType;
 
 /**
  * "to_char" "(" Column, Format ")"
@@ -24,16 +24,16 @@ final class ToChar extends FunctionNode
 
 	public function parse(Parser $parser): void
 	{
-		$parser->match(Lexer::T_IDENTIFIER); // (2)
-		$parser->match(Lexer::T_OPEN_PARENTHESIS); // (3)
+		$parser->match(TokenType::T_IDENTIFIER); // (2)
+		$parser->match(TokenType::T_OPEN_PARENTHESIS); // (3)
 
 		$this->column = $parser->StringPrimary(); // (4)
 
-		$parser->match(Lexer::T_COMMA); // (5)
+		$parser->match(TokenType::T_COMMA); // (5)
 
 		$this->format = $parser->StringPrimary(); // (6)
 
-		$parser->match(Lexer::T_CLOSE_PARENTHESIS); // (7)
+		$parser->match(TokenType::T_CLOSE_PARENTHESIS); // (7)
 	}
 
 

@@ -22,7 +22,7 @@ class NetteEntityListenerResolver implements EntityListenerResolver
 	/**
 	 * @inheritdoc
 	 */
-	public function clear(/*string*/ $className = null)//: void
+	public function clear(string $className = null): void
 	{
 		if (is_null($className)) {
 			return;
@@ -37,7 +37,7 @@ class NetteEntityListenerResolver implements EntityListenerResolver
 	 * @param  class-string $className
 	 * @throws MissingServiceException
 	 */
-	public function resolve(/*string*/ $className)//: object
+	public function resolve(string $className): object
 	{
 		return $this->container->getByType($className);
 	}
@@ -46,7 +46,7 @@ class NetteEntityListenerResolver implements EntityListenerResolver
 	/**
 	 * @inheritdoc
 	 */
-	public function register(/*object*/ $resolver)//: void
+	public function register(object $resolver): void
 	{
 		$this->container->addService(get_class($resolver), $resolver);
 	}

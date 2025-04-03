@@ -9,31 +9,31 @@ namespace JuniWalk\ORM\Functions;
 
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
 use Doctrine\ORM\Query\AST\Node;
-use Doctrine\ORM\Query\Lexer;
 use Doctrine\ORM\Query\Parser;
 use Doctrine\ORM\Query\SqlWalker;
+use Doctrine\ORM\Query\TokenType;
 
 /**
  * "json_str" "(" Column, Property ")"
  */
 final class JsonStr extends FunctionNode
 {
-	public Node $property;
-	public Node $column;
+	public Node|string $property;
+	public Node|string $column;
 
 
 	public function parse(Parser $parser): void
 	{
-		$parser->match(Lexer::T_IDENTIFIER); // (2)
-		$parser->match(Lexer::T_OPEN_PARENTHESIS); // (3)
+		$parser->match(TokenType::T_IDENTIFIER); // (2)
+		$parser->match(TokenType::T_OPEN_PARENTHESIS); // (3)
 
 		$this->column = $parser->StringPrimary(); // (4)
 
-		$parser->match(Lexer::T_COMMA); // (5)
+		$parser->match(TokenType::T_COMMA); // (5)
 
 		$this->property = $parser->SimpleArithmeticExpression(); // (6)
 
-		$parser->match(Lexer::T_CLOSE_PARENTHESIS); // (7)
+		$parser->match(TokenType::T_CLOSE_PARENTHESIS); // (7)
 	}
 
 

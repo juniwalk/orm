@@ -10,9 +10,9 @@ namespace JuniWalk\ORM\Functions;
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
 use Doctrine\ORM\Query\AST\Literal;
 use Doctrine\ORM\Query\AST\Node;
-use Doctrine\ORM\Query\Lexer;
 use Doctrine\ORM\Query\Parser;
 use Doctrine\ORM\Query\SqlWalker;
+use Doctrine\ORM\Query\TokenType;
 
 /**
  * "cast" "(" Column, Type ")")
@@ -25,32 +25,32 @@ final class Cast extends FunctionNode
 
 	public function parse(Parser $parser): void
 	{
-		$parser->match(Lexer::T_IDENTIFIER); // (2)
-		$parser->match(Lexer::T_OPEN_PARENTHESIS); // (3)
+		$parser->match(TokenType::T_IDENTIFIER); // (2)
+		$parser->match(TokenType::T_OPEN_PARENTHESIS); // (3)
 		$lexer = $parser->getLexer();
 
 		$this->column = $parser->StringPrimary(); // (4)
 
 		switch (true) {
-			case $lexer->isNextToken(Lexer::T_COMMA):
-				$parser->match(Lexer::T_COMMA); // (5)
+			case $lexer->isNextToken(TokenType::T_COMMA):
+				$parser->match(TokenType::T_COMMA); // (5)
 				break;
-			case $lexer->isNextToken(Lexer::T_AS):
-				$parser->match(Lexer::T_AS); // (5)
+			case $lexer->isNextToken(TokenType::T_AS):
+				$parser->match(TokenType::T_AS); // (5)
 				break;
 		}
 
 		switch (true) {
-			case $lexer->isNextToken(Lexer::T_STRING):
+			case $lexer->isNextToken(TokenType::T_STRING):
 				$this->type = $parser->StringPrimary(); // (6)
 				break;
-			case $lexer->isNextToken(Lexer::T_IDENTIFIER):
-				$parser->match(Lexer::T_IDENTIFIER);
+			case $lexer->isNextToken(TokenType::T_IDENTIFIER):
+				$parser->match(TokenType::T_IDENTIFIER);
 				$this->type = new Literal(Literal::STRING, $lexer->token->value ?? 'varchar'); // (6)
 				break;
 		}
 
-		$parser->match(Lexer::T_CLOSE_PARENTHESIS); // (7)
+		$parser->match(TokenType::T_CLOSE_PARENTHESIS); // (7)
 	}
 
 
@@ -65,10 +65,6 @@ final class Cast extends FunctionNode
 		$type = trim(strtolower($type), '"\'');
 		if ($type === 'datetime') {
 			return '"timestamp"(' . $column . ')';
-		}
-
-		if ($type === 'json' && !$sqlWalker->getConnection()->getDatabasePlatform()->hasNativeJsonType()) {
-			$type = 'text';
 		}
 
 		if ($type === 'bool') {
