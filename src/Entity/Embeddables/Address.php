@@ -5,7 +5,7 @@
  * @license   MIT License
  */
 
-namespace JuniWalk\ORM\Entity\Embedables;
+namespace JuniWalk\ORM\Entity\Embeddables;
 
 use Doctrine\ORM\Mapping as ORM;
 use Stringable;

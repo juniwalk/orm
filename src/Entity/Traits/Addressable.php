@@ -8,7 +8,7 @@
 namespace JuniWalk\ORM\Entity\Traits;
 
 use Doctrine\ORM\Mapping as ORM;
-use JuniWalk\ORM\Entity\Embedables\Address;
+use JuniWalk\ORM\Entity\Embeddables\Address;
 
 trait Addressable
 {
