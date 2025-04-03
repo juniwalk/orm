@@ -257,23 +257,6 @@ abstract class Repository
 
 
 	/**
-	 * @return T|null
-	 * @throws BadMethodCallException
-	 */
-	public function findFormReference(string $field, Form $form): ?object
-	{
-		if (str_ends_with($field, '[]')) {
-			throw new BadMethodCallException('Call getFormReferences to get list of references.');
-		}
-
-		/** @var non-falsy-string|null */
-		$id = $form->getHttpData(Form::DataLine, $field) ?: null;
-
-		return $this->findById($id);
-	}
-
-
-	/**
 	 * @return T
 	 * @throws BadMethodCallException
 	 * @throws EntityNotFoundException
@@ -293,6 +276,22 @@ abstract class Repository
 		} catch (NoResultException $e) {
 			throw EntityNotFoundException::fromField($field, $id, $e);
 		}
+	}
+
+
+	/**
+	 * @return T|null
+	 * @throws BadMethodCallException
+	 */
+	public function findFormReference(string $field, Form $form): ?object
+	{
+		try {
+			return $this->getFormReference($field, $form);
+
+		} catch (EntityNotFoundException) {
+		}
+
+		return null;
 	}
 
 
