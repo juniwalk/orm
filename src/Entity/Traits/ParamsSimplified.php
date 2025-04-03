@@ -52,13 +52,4 @@ trait ParamsSimplified
 	{
 		return $this->params;
 	}
-
-
-	/**
-	 * @deprecated
-	 */
-	public function hasParam(string $key): bool
-	{
-		return isset($this->params[$key]);
-	}
 }
