@@ -276,7 +276,7 @@ abstract class Repository
 			throw new BadMethodCallException('Call getFormReferences to get list of references.');
 		}
 
-		/** @var string|null */
+		/** @var non-falsy-string|null */
 		$id = $form->getHttpData(Form::DataLine, $field) ?: null;
 
 		return $this->findById($id);
@@ -294,7 +294,7 @@ abstract class Repository
 			throw new BadMethodCallException('Call getFormReferences to get list of references.');
 		}
 
-		/** @var string|null */
+		/** @var non-falsy-string|null */
 		$id = $form->getHttpData(Form::DataLine, $field) ?: null;
 
 		try {

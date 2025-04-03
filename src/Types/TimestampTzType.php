@@ -53,7 +53,6 @@ class TimestampTzType extends Type
 
 
 	/**
-	 * @param  ?DateTime $value
 	 * @throws ConversionException
 	 */
 	public function convertToDatabaseValue(mixed $value, AbstractPlatform $platform): ?string
@@ -62,7 +61,6 @@ class TimestampTzType extends Type
 			return $value?->format(self::Format);
 		}
 
-		// @phpstan-ignore-next-line
 		throw ConversionException::conversionFailedInvalidType($value, $this->getName(), ['null', 'DateTime']);
 	}
 

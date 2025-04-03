@@ -18,7 +18,7 @@ final class EntityNotFoundException extends \RuntimeException
 
 	public static function fromField(string $field, mixed $id, ?Throwable $previous = null): self
 	{
-		$self = new self('Entity in form field "'.$field.'" with id "'.$id.'" was not found.', previous: $previous);
+		$self = new self('Entity in form field "'.$field.'" with id "'.$id.'" was not found.', previous: $previous);	// @phpstan-ignore binaryOp.invalid
 		$self->entityName = $field;
 		$self->id = $id;
 

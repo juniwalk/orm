@@ -53,7 +53,7 @@ class SortableNullsWalker extends SqlWalker
 
 		$index = $expr->identificationVariable.'.'.$expr->field;
 
-		if (!isset($hint[$index])) {
+		if (!isset($hint[$index]) || !is_string($hint[$index])) {
 			return $sql;
 		}
 

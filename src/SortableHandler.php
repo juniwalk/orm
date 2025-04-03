@@ -52,7 +52,7 @@ class SortableHandler
 		$moveUp = $items[$itemId]->getOrder() <= (int) ($items[$nextId] ?? null)?->getOrder();
 
 		foreach ($items as $id => $item) {
-			if (!$item instanceof Sortable) {
+			if (!$item instanceof Sortable) {	// @phpstan-ignore instanceof.alwaysTrue (I'd like to keep the check)
 				throw new EntityNotValidException($item::class.' has to implement '.Sortable::class);
 			}
 

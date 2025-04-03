@@ -19,7 +19,7 @@ trait ParamsStructured
 {
 	private PropertyAccessor $__accessor;
 
-	/** @var mixed[] */
+	/** @var array<string, mixed> */
 	#[ORM\Column(type: 'json', options: ['jsonb' => true, 'default' => '[]'])]
 	protected array $params = [];
 
@@ -29,12 +29,12 @@ trait ParamsStructured
 	 */
 	public function setParam(string $key, mixed $value): void
 	{
-		if ($value && !$value = Format::scalarize($value)) {
+		if ($value && !$value = Format::serializable($value)) {
 			throw new InvalidArgumentException('Value '.gettype($value).' cannot be scalarized');
 		}
 
 		$this->__accessor()->setValue(
-			$this->params,
+			$this->params,	// @phpstan-ignore assign.propertyType (Don't know why it happens)
 			$this->__path($key),
 			$value,
 		);
@@ -57,7 +57,7 @@ trait ParamsStructured
 
 
 	/**
-	 * @return mixed[]
+	 * @return array<string, mixed>
 	 */
 	public function getParams(): array
 	{
