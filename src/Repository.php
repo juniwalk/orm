@@ -198,7 +198,7 @@ abstract class Repository
 	 */
 	public function fetchAssociations(object|array|null $result, array $columns): void
 	{
-		if (!is_array($result)) {
+		if ($result && !is_array($result)) {
 			$result = [$result];
 		}
 
