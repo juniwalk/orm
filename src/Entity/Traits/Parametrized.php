@@ -7,6 +7,9 @@
 
 namespace JuniWalk\ORM\Entity\Traits;
 
+/**
+ * @deprecated
+ */
 trait Parametrized
 {
 	use ParamsSimplified;
