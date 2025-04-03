@@ -237,6 +237,24 @@ abstract class Repository
 	}
 
 
+	public function select(string $alias, ?string $indexBy = null): QueryBuilder
+	{
+		return $this->createQueryBuilder($alias, $indexBy);
+	}
+
+
+	public function update(string $alias): QueryBuilder
+	{
+		return $this->createQueryBuilder($alias)->update();
+	}
+
+
+	public function delete(string $alias): QueryBuilder
+	{
+		return $this->createQueryBuilder($alias)->delete();
+	}
+
+
 	public function createQuery(string $dql): Query
 	{
 		return $this->entityManager->createQuery($dql);
