@@ -49,6 +49,7 @@ abstract class Repository
 
 	/**
 	 * @return T[]
+	 * @throws DriverException
 	 * @throws NoResultException
 	 */
 	public function getBy(
@@ -70,6 +71,7 @@ abstract class Repository
 
 	/**
 	 * @return T
+	 * @throws DriverException
 	 * @throws NoResultException
 	 */
 	public function getOneBy(callable $where, ?string $indexBy = self::DefaultIndexBy): object
