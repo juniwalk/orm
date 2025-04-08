@@ -8,6 +8,7 @@
 namespace JuniWalk\ORM;
 
 use BadMethodCallException;
+use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -124,7 +125,18 @@ abstract class Repository
 		}
 
 		$where = fn($qb) => $qb->where(self::DefaultIdentifier.' = :id')->setParameter('id', $id);
-		return $this->getOneBy($where, $indexBy);
+
+		try {
+			return $this->getOneBy($where, $indexBy);
+
+		} catch (DriverException $e) {
+			// ? Type of the Id column did not match the value
+			if ($e->getSQLState() === '22P02') {
+				throw new NoResultException;
+			}
+
+			throw $e;
+		}
 	}
 
 
@@ -135,6 +147,14 @@ abstract class Repository
 	{
 		try {
 			return $this->getById($id, $indexBy);
+
+		} catch (DriverException $e) {
+			// ? Type of the Id column did not match the value
+			if ($e->getSQLState() === '22P02') {
+				return null;
+			}
+
+			throw $e;
 
 		} catch (NoResultException) {
 			return null;
