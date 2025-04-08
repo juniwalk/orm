@@ -18,8 +18,7 @@ use Ramsey\Uuid\UuidInterface as Uuid;
  */
 trait IdentifierUUIDv4
 {
-	#[ORM\Id]
-	#[ORM\GeneratedValue(strategy: "CUSTOM")]
+	#[ORM\Id, ORM\GeneratedValue(strategy: "CUSTOM")]
 	#[ORM\CustomIdGenerator(class: UuidGenerator::class)]
 	#[ORM\Column(type: 'uuid', unique: true, nullable: false)]
 	protected Uuid $id;	// ! Cannot be readonly | See doctrine/orm #9538 & #9863

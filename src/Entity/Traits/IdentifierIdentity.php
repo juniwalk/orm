@@ -16,8 +16,7 @@ use JuniWalk\ORM\Exceptions\EntityNotPersistedException;
  */
 trait IdentifierIdentity
 {
-	#[ORM\Id]
-	#[ORM\GeneratedValue(strategy: 'IDENTITY')]
+	#[ORM\Id, ORM\GeneratedValue(strategy: 'IDENTITY')]
 	#[ORM\Column(type: 'integer', unique: true, nullable: false)]
 	protected int $id;	// ! Cannot be readonly | See doctrine/orm #9538 & #9863
 
