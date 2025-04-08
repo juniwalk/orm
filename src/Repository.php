@@ -150,14 +150,6 @@ abstract class Repository
 		try {
 			return $this->getById($id, $indexBy);
 
-		} catch (DriverException $e) {
-			// ? Type of the Id column did not match the value
-			if ($e->getSQLState() === '22P02') {
-				return null;
-			}
-
-			throw $e;
-
 		} catch (NoResultException) {
 			return null;
 		}
