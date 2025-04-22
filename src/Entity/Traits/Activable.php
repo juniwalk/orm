@@ -7,8 +7,12 @@
 
 namespace JuniWalk\ORM\Entity\Traits;
 
+use JuniWalk\ORM\Entity\Interfaces\Activated;	// ! Used for @phpstan
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @phpstan-require-implements Activated
+ */
 trait Activable
 {
 	#[ORM\Column(type: 'boolean', options: ['default' => true])]
