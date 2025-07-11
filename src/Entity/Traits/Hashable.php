@@ -21,7 +21,6 @@ trait Hashable
 	}
 
 
-	#[ORM\PreFlush]
 	final public function createHash(): string
 	{
 		$hash = $this->createHashParams();
