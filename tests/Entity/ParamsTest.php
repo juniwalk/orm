@@ -5,6 +5,9 @@
  * @license   MIT License
  */
 
+namespace JuniWalk\ORM\Tests\Entity;
+
+use DateTime;
 use JuniWalk\ORM\Entity\Traits\ParamsSimplified;
 use JuniWalk\ORM\Entity\Traits\ParamsStructured;
 use Tester\Assert;

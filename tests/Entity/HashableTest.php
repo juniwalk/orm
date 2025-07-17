@@ -5,6 +5,8 @@
  * @license   MIT License
  */
 
+namespace JuniWalk\ORM\Tests\Entity;
+
 use JuniWalk\ORM\Entity\Traits\Hashable;
 use Tester\Assert;
 use Tester\TestCase;

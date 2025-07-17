@@ -5,6 +5,8 @@
  * @license   MIT License
  */
 
+namespace JuniWalk\ORM\Tests\Basics;
+
 use JuniWalk\ORM\SearchQuery;
 use Tester\Assert;
 use Tester\TestCase;
