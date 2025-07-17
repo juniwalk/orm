@@ -23,8 +23,8 @@ trait ParamsSimplified
 	 */
 	public function setParam(string $key, mixed $value, bool $overwrite = true): void
 	{
-		if ($value && !$value = Format::scalarize($value)) {
-			throw new InvalidArgumentException('Value '.gettype($value).' cannot be scalarized');
+		if ($value && !$value = Format::serializable($value)) {
+			throw new InvalidArgumentException('Value '.gettype($value).' cannot be serialized');
 		}
 
 		if (!$overwrite && isset($this->params[$key])) {

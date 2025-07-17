@@ -30,7 +30,7 @@ trait ParamsStructured
 	public function setParam(string $key, mixed $value): void
 	{
 		if ($value && !$value = Format::serializable($value)) {
-			throw new InvalidArgumentException('Value '.gettype($value).' cannot be scalarized');
+			throw new InvalidArgumentException('Value '.gettype($value).' cannot be serialized');
 		}
 
 		$this->__accessor()->setValue(
