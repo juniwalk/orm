@@ -8,6 +8,7 @@
 namespace JuniWalk\ORM\Tools;
 
 use Doctrine\DBAL\Schema\AbstractAsset;
+use Doctrine\DBAL\Schema\Name\OptionallyQualifiedName;
 use JuniWalk\Utils\Strings;
 
 final class SchemaAssetsFilter
@@ -21,6 +22,9 @@ final class SchemaAssetsFilter
 	}
 
 
+	/**
+	 * @param AbstractAsset<OptionallyQualifiedName> $assetName
+	 */
 	public function __invoke(string|AbstractAsset $assetName): bool
 	{
 		if (empty($this->assets)) {
