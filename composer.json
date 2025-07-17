@@ -43,9 +43,9 @@
 		"phpstan/extension-installer": "^1.0",
 		"phpstan/phpstan": "^2.0",
 		"phpstan/phpstan-nette": "^2.0",
-		"staabm/phpstan-todo-by": "^0.2",
+		"staabm/phpstan-todo-by": "^0.3",
 		"symfony/property-access": "^7.0",
-		"ublaboo/datagrid": "^6.10"
+		"ublaboo/datagrid": "^6.10|^7.0"
 	},
 
 	"suggest": {
