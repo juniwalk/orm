@@ -8,9 +8,9 @@
 namespace JuniWalk\ORM;
 
 use Closure;
+use Contributte\Datagrid\Datagrid;
 use JuniWalk\ORM\Entity\Interfaces\Sortable;
 use JuniWalk\ORM\Exceptions\EntityNotValidException;
-use Ublaboo\DataGrid\DataGrid;
 
 class SortableHandler
 {
@@ -21,7 +21,7 @@ class SortableHandler
 	 */
 	public function __construct(
 		private readonly string $column,
-		DataGrid $grid,
+		Datagrid $grid,
 		private readonly Closure $callback,
 	) {
 		$grid->findSessionValues();
