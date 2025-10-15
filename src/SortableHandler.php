@@ -24,7 +24,15 @@ class SortableHandler
 		Datagrid $grid,
 		private readonly Closure $callback,
 	) {
-		$grid->findSessionValues();
+		if (method_exists($grid, 'findStorageValues')) {
+			// ? For Datagrid version <= v7.0.0
+			$grid->findStorageValues();
+
+		} else {
+			// ? For Datagrid version >= v7.1.0
+			$grid->findSessionValues();
+		}
+
 		$grid->findDefaultSort();
 
 		$this->order = $grid->sort[$column] ?? null;
