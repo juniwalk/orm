@@ -22,7 +22,7 @@ class NetteEntityListenerResolver implements EntityListenerResolver
 	/**
 	 * @inheritdoc
 	 */
-	public function clear(string $className = null): void
+	public function clear(?string $className = null): void
 	{
 		if (is_null($className)) {
 			return;
