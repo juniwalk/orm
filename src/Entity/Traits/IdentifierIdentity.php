@@ -22,16 +22,15 @@ trait IdentifierIdentity
 
 
 	/**
-	 * @return ($require is true ? int : ?int)
 	 * @throws EntityNotPersistedException
 	 */
-	public function getId(bool $require = false): ?int
+	public function getId(): int
 	{
-		if ($require && $this->isNotPersisted()) {
+		if (!isset($this->id)) {
 			throw EntityNotPersistedException::fromEntity($this);
 		}
 
-		return $this->id ?? null;
+		return $this->id;
 	}
 
 

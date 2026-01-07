@@ -25,16 +25,15 @@ trait IdentifierUUIDv4
 
 
 	/**
-	 * @return ($require is true ? Uuid : ?Uuid)
 	 * @throws EntityNotPersistedException
 	 */
-	public function getId(bool $require = false): ?Uuid
+	public function getId(): Uuid
 	{
-		if ($require && $this->isNotPersisted()) {
+		if (!isset($this->id)) {
 			throw EntityNotPersistedException::fromEntity($this);
 		}
 
-		return $this->id ?? null;
+		return $this->id;
 	}
 
 
