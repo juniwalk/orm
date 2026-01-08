@@ -21,6 +21,12 @@ trait IdentifierIdentity
 	protected int $id;	// ! Cannot be readonly | See doctrine/orm #9538 & #9863
 
 
+	public function __clone(): void
+	{
+		unset($this->id);
+	}
+
+
 	/**
 	 * @throws EntityNotPersistedException
 	 */
@@ -34,14 +40,14 @@ trait IdentifierIdentity
 	}
 
 
-	public function __clone(): void
+	public function isIdAvailable(): bool
 	{
-		unset($this->id);
+		return isset($this->id);
 	}
 
 
 	public function isNotPersisted(): bool
 	{
-		return !isset($this->id);
+		return !$this->isIdAvailable();
 	}
 }
