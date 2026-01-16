@@ -44,8 +44,7 @@
 		"phpstan/phpstan": "^2.0",
 		"phpstan/phpstan-nette": "^2.0",
 		"staabm/phpstan-todo-by": "^0.3",
-		"symfony/property-access": "^7.0",
-		"ublaboo/datagrid": "^6.10|^7.0"
+		"symfony/property-access": "^7.0|^8.0"
 	},
 
 	"suggest": {
