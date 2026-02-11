@@ -238,19 +238,6 @@ abstract class Repository
 	}
 
 
-	public function createQueryBuilder(string $alias, ?string $indexBy = null, ?callable $where = null): QueryBuilder
-	{
-		$qb = $this->entityManager->createQueryBuilder()->select($alias)
-			->from($this->entityName, $alias, $indexBy);
-
-		if ($where) {
-			$qb = $where($qb) ?? $qb;
-		}
-
-		return $qb;
-	}
-
-
 	public function select(string $alias, ?string $indexBy = null): QueryBuilder
 	{
 		return $this->createQueryBuilder($alias, $indexBy);
@@ -269,9 +256,28 @@ abstract class Repository
 	}
 
 
+	public function createQueryBuilder(string $alias, ?string $indexBy = null, ?callable $where = null): QueryBuilder
+	{
+		$qb = $this->entityManager->createQueryBuilder()->select($alias)
+			->from($this->entityName, $alias, $indexBy);
+
+		if ($where) {
+			$qb = $where($qb) ?? $qb;
+		}
+
+		return $qb;
+	}
+
+
 	public function createQuery(string $dql): Query
 	{
 		return $this->entityManager->createQuery($dql);
+	}
+
+
+	public function createTableManager(): TableManager
+	{
+		return new TableManager($this->entityManager);
 	}
 
 
