@@ -11,6 +11,7 @@ use DateTime;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Exception as DriverException;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
+use Doctrine\ORM\Mapping\MappingException;
 
 class TableManager
 {
@@ -49,6 +50,33 @@ class TableManager
 	public function truncate(string $entityName, bool $cascade = false): void
 	{
 		$this->execute('TRUNCATE TABLE '.$this->tableName($entityName).' RESTART IDENTITY'.($cascade == true ? ' CASCADE' : null));
+	}
+
+
+	/**
+	 * @param  class-string $entityName
+	 * @throws DriverException
+	 * @throws MappingException
+	 */
+	public function reorder(string $entityName, string $fieldName): void
+	{
+		$metaData = $this->entityManager->getClassMetadata($entityName);
+
+		if (!in_array($fieldName, $metaData->fieldNames)) {
+            throw MappingException::mappingNotFound($entityName, $fieldName);
+		}
+
+		$columnName = $metaData->getColumnName($fieldName);
+		$id = $metaData->getSingleIdentifierColumnName();
+		$tableName = implode('.', array_filter([
+			$metaData->getSchemaName(),
+			$metaData->getTableName(),
+		]));
+
+		$this->execute(<<<SQL
+			WITH cte AS (SELECT {$id}, ROW_NUMBER() OVER (ORDER BY "{$columnName}") AS rn FROM {$tableName})
+			UPDATE {$tableName} SET "{$columnName}" = cte.rn FROM cte WHERE cte.{$id} = {$tableName}.{$id};
+		SQL);
 	}
 
 
