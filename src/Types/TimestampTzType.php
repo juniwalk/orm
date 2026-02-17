@@ -28,7 +28,7 @@ class TimestampTzType extends Type
 
 	public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
 	{
-		return 'TIMESTAMP WITH TIME ZONE';
+		return 'TIMESTAMP(0) WITH TIME ZONE';
 	}
 
 
