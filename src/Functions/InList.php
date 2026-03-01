@@ -19,7 +19,7 @@ use Doctrine\ORM\Query\TokenType;
  */
 final class InList extends FunctionNode
 {
-	public Node $column;
+	public Node|string $column;
 
 	/** @var Node[] */
 	public array $values;
@@ -39,7 +39,7 @@ final class InList extends FunctionNode
 
 			$this->values[] = $parser->InParameter();
 
-		} while ($lexer->lookahead->type !== TokenType::T_CLOSE_PARENTHESIS);
+		} while ($lexer->lookahead?->type !== TokenType::T_CLOSE_PARENTHESIS);
 
 		$parser->match(TokenType::T_CLOSE_PARENTHESIS);
 	}
