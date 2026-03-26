@@ -7,54 +7,54 @@
 
 namespace JuniWalk\ORM\Entity\Traits;
 
-use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 trait Timestamp
 {
-	#[ORM\Column(type: 'datetimetz', options: ['default' => 'CURRENT_TIMESTAMP'])]
-	protected readonly DateTime $created;
+	#[ORM\Column(type: 'datetimetz_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
+	protected readonly DateTimeImmutable $created;
 
-	#[ORM\Column(type: 'datetimetz', options: ['default' => 'CURRENT_TIMESTAMP'])]
-	protected DateTime $modified;
+	#[ORM\Column(type: 'datetimetz_immutable', options: ['default' => 'CURRENT_TIMESTAMP'])]
+	protected DateTimeImmutable $modified;
 
 
 	public function setCreated(DateTimeInterface $created): void
 	{
-		$this->created ??= DateTime::createFromInterface($created);
+		$this->created ??= DateTimeImmutable::createFromInterface($created);
 	}
 
 
-	public function getCreated(): DateTime
+	public function getCreated(): DateTimeImmutable
 	{
-		return clone $this->created;
+		return $this->created;
 	}
 
 
 	public function setModified(DateTimeInterface $modified): void
 	{
-		$this->modified = DateTime::createFromInterface($modified);
+		$this->modified = DateTimeImmutable::createFromInterface($modified);
 	}
 
 
-	public function getModified(): DateTime
+	public function getModified(): DateTimeImmutable
 	{
-		return clone $this->modified;
+		return $this->modified;
 	}
 
 
 	#[ORM\PrePersist]
 	public function onCreated(): void
 	{
-		$this->created ??= new DateTime;
-		$this->modified = new DateTime;
+		$this->created ??= new DateTimeImmutable;
+		$this->modified = new DateTimeImmutable;
 	}
 
 
 	#[ORM\PreUpdate]
 	public function onModified(): void
 	{
-		$this->modified = new DateTime;
+		$this->modified = new DateTimeImmutable;
 	}
 }
