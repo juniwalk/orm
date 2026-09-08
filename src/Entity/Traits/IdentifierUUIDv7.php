@@ -43,6 +43,15 @@ trait IdentifierUUIDv7
 	}
 
 
+	/**
+	 * @throws EntityNotPersistedException
+	 */
+	public function getIdString(): string
+	{
+		return $this->getId()->toString();
+	}
+
+
 	public function isIdAvailable(): bool
 	{
 		return isset($this->id);
