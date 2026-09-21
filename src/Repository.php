@@ -20,6 +20,7 @@ use JuniWalk\Utils\Arrays;
 use JuniWalk\Utils\Strings;
 use Nette\Forms\Form;
 use Nette\Utils\Html;
+use Ramsey\Uuid\UuidInterface as Uuid;
 
 /**
  * @template T of object
@@ -121,12 +122,17 @@ abstract class Repository
 	 */
 	public function getById(mixed $id, ?string $indexBy = self::DefaultIndexBy): object
 	{
-		// TODO: Might need to allow Uuid for example
+		if ($id instanceof Uuid) {
+			$id = $id->toString();
+		}
+
 		if (empty($id) || !is_scalar($id)) {
 			throw new NoResultException;
 		}
 
-		$where = fn($qb) => $qb->where(self::DefaultIdentifier.' = :id')->setParameter('id', $id);
+		$where = static fn($qb) => $qb
+			->where(self::DefaultIdentifier.' = :id')
+			->setParameter('id', $id);
 
 		try {
 			return $this->getOneBy($where, $indexBy);
@@ -165,7 +171,7 @@ abstract class Repository
 		?string $indexBy = self::DefaultIndexBy,
 		?Display $display = null,
 	): array {
-		$result = $this->findBy($where ?? fn($qb) => $qb, $maxResults, $indexBy);
+		$result = $this->findBy($where ?? static fn($qb) => $qb, $maxResults, $indexBy);
 		$display ??= Display::Large;
 		$items = [];
 
