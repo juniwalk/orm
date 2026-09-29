@@ -163,6 +163,24 @@ abstract class Repository
 
 
 	/**
+	 * @param  mixed[] $result
+	 * @return Html[]
+	 */
+	public function findOptions(array $result, ?Display $display = null): array
+	{
+		if (empty($result)) {
+			return [];
+		}
+
+		return $this->createOptions(static fn($qb) => $qb
+			->where(self::DefaultAlias.' IN (:result)')
+			->setParameter('result', $result),
+			display: $display,
+		);
+	}
+
+
+	/**
 	 * @return Html[]
 	 */
 	public function createOptions(
