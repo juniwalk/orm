@@ -167,10 +167,10 @@ abstract class Repository
 
 
 	/**
-	 * @param  mixed[] $result
+	 * @param  mixed|mixed[] $result
 	 * @return Html[]
 	 */
-	public function findOptions(array $result, ?Display $display = null): array
+	public function findOptions(mixed $result, ?Display $display = null): array
 	{
 		if (empty($result)) {
 			return [];
