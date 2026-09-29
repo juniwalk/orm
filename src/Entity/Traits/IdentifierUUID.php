@@ -52,6 +52,6 @@ trait IdentifierUUID
 
 	public function isIdAvailable(): bool
 	{
-		throw new EntityNotPersistedException('Calling isIdAvailable is not reliable for UUID identifiers');
+		return isset($this->id);
 	}
 }
