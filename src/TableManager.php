@@ -13,6 +13,10 @@ use Doctrine\DBAL\Driver\Exception as DriverException;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Doctrine\ORM\Mapping\MappingException;
 
+use function array_filter;
+use function implode;
+use function in_array;
+
 class TableManager
 {
 	protected readonly Connection $connection;

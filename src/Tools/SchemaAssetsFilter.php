@@ -9,7 +9,10 @@ namespace JuniWalk\ORM\Tools;
 
 use Doctrine\DBAL\Schema\AbstractAsset;
 use Doctrine\DBAL\Schema\Name\OptionallyQualifiedName;
-use JuniWalk\Utils\Strings;
+use Nette\Utils\Strings;
+
+use function in_array;
+use function implode;
 
 final class SchemaAssetsFilter
 {

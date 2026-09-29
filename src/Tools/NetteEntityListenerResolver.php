@@ -11,6 +11,9 @@ use Doctrine\ORM\Mapping\EntityListenerResolver;
 use Nette\DI\Container;
 use Nette\DI\MissingServiceException;
 
+use function get_class;
+use function is_null;
+
 class NetteEntityListenerResolver implements EntityListenerResolver
 {
 	public function __construct(

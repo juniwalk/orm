@@ -9,6 +9,11 @@ namespace JuniWalk\ORM\Entity\Traits;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use function is_string;
+use function serialize;
+use function sha1;
+use function substr;
+
 trait Hashable
 {
 	#[ORM\Column(type: 'string', length: 8, nullable: true)]

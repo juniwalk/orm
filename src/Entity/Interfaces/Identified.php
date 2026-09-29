@@ -11,9 +11,4 @@ interface Identified
 {
 	public function getId(): mixed;
 	public function isIdAvailable(): bool;
-
-	/**
-	 * @deprecated Use isIdAvailable instead
-	 */
-	public function isNotPersisted(): bool;
 }

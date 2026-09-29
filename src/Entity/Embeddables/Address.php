@@ -10,6 +10,11 @@ namespace JuniWalk\ORM\Entity\Embeddables;
 use Doctrine\ORM\Mapping as ORM;
 use Stringable;
 
+use function array_filter;
+use function implode;
+use function str_replace;
+use function strtoupper;
+
 #[ORM\Embeddable]
 class Address implements Stringable
 {

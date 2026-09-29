@@ -11,6 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
 use JuniWalk\Utils\Format;
 
+use function gettype;
+use function is_null;
+
 trait ParamsSimplified
 {
 	/** @var mixed[] */

@@ -44,10 +44,4 @@ trait IdentifierIdentity
 	{
 		return isset($this->id);
 	}
-
-
-	public function isNotPersisted(): bool
-	{
-		return !$this->isIdAvailable();
-	}
 }

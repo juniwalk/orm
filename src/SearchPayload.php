@@ -128,18 +128,11 @@ class SearchPayload implements JsonSerializable
 	 */
 	public function getPayload(): array
 	{
-		$results = [];
-
-		foreach ($this->items as $item) {
-			if ($item instanceof SearchGroup) {
-				$item->children = array_values($item->children);
-			}
-
-			$results[] = $item;
-		}
+		$results = array_values($this->items);
+		$results = array_slice($results, 0, $this->maxResults);
 
 		return [
-			'results'		=> array_slice($results, 0, $this->maxResults),
+			'results'		=> $results,
 			'pagination'	=> [
 				'more'		=> $this->maxResults && $this->pageCount > $this->maxResults,
 				'found'		=> $this->pageCount,

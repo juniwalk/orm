@@ -15,6 +15,8 @@ use Doctrine\DBAL\Types\Exception\InvalidType;
 use Doctrine\DBAL\Types\Type;
 use Throwable;
 
+use function is_null;
+
 class TimestampTzType extends Type
 {
 	public const Type = 'timestamptz';

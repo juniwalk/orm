@@ -16,11 +16,15 @@ use Doctrine\ORM\NoResultException;
 use JuniWalk\ORM\Entity\Interfaces\HtmlOption;
 use JuniWalk\ORM\Enums\Display;
 use JuniWalk\ORM\Exceptions\EntityNotFoundException;
-use JuniWalk\Utils\Arrays;
-use JuniWalk\Utils\Strings;
 use Nette\Forms\Form;
 use Nette\Utils\Html;
+use Nette\Utils\Strings;
 use Ramsey\Uuid\UuidInterface as Uuid;
+
+use function class_exists;
+use function str_ends_with;
+use function is_array;
+use function is_scalar;
 
 /**
  * @template T of object
@@ -172,11 +176,11 @@ abstract class Repository
 			return [];
 		}
 
-		return $this->createOptions(static fn($qb) => $qb
+		$where = static fn($qb) => $qb
 			->where(self::DefaultAlias.' IN (:result)')
-			->setParameter('result', $result),
-			display: $display,
-		);
+			->setParameter('result', $result);
+
+		return $this->createOptions($where, display: $display);
 	}
 
 
@@ -214,7 +218,7 @@ abstract class Repository
 		?int $maxResults = null,
 		?string $indexBy = self::DefaultIndexBy,
 	): mixed {
-		$qb = $this->createQueryBuilder(self::DefaultAlias, $indexBy, function($qb) use ($where) {
+		$qb = $this->createQueryBuilder(self::DefaultAlias, $indexBy, static function($qb) use ($where) {
 			$qb->select('COUNT('.self::DefaultIdentifier.')');
 			return $where($qb) ?? $qb;
 		});
@@ -369,6 +373,10 @@ abstract class Repository
 		/** @var mixed[] */
 		$data = $form->getHttpData(Form::DataLine, $field) ?? [];
 
-		return Arrays::walk($data, fn($id) => yield $id => $this->getById($id));
+		foreach ($data as $key => $value) {
+			$data[$key] = $this->getById($value);
+		}
+
+		return $data;
 	}
 }

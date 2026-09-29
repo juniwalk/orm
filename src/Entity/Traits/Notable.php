@@ -9,6 +9,9 @@ namespace JuniWalk\ORM\Entity\Traits;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use function html_entity_decode;
+use function is_null;
+
 trait Notable
 {
 	#[ORM\Column(type: 'text', nullable: true)]

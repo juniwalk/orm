@@ -15,6 +15,10 @@ use LogicException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
+use function gettype;
+use function is_null;
+use function str_replace;
+
 trait ParamsStructured
 {
 	private PropertyAccessor $__accessor;

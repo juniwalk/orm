@@ -11,6 +11,10 @@ use Doctrine\ORM\Query\AST\PathExpression;
 use Doctrine\ORM\Query\AST\OrderByItem;
 use Doctrine\ORM\Query\SqlWalker;
 
+use function is_array;
+use function is_string;
+use function str_replace;
+
 /**
  * The SortableNullsWalker is a TreeWalker that walks over a DQL AST and constructs
  * the corresponding SQL to allow ORDER BY x ASC NULLS FIRST|LAST.
@@ -19,18 +23,22 @@ use Doctrine\ORM\Query\SqlWalker;
  * [use]
  * $query = $qb->getQuery();
  * $query->setHint(Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER, SortableNullsWalker::class);
- * $query->setHint(SortableNullsWalker::FIELDS_KEY, [
- *		'p.firstname' => SortableNullsWalker::NULLS_FIRST,
+ * $query->setHint(SortableNullsWalker::FieldKey, [
+ *		'p.firstname' => SortableNullsWalker::NullsLast,
  *	]);
  */
 class SortableNullsWalker extends SqlWalker
 {
-	/** @var string */
-	public const FIELDS_KEY = 'sortableNulls.fields';
+	public const string FieldKey = 'sortableNulls.fields';
+	public const string NullsFirst = 'NULLS FIRST';
+	public const string NullsLast = 'NULLS LAST';
 
-	/** @var string */
-	public const NULLS_FIRST = 'NULLS FIRST';
-	public const NULLS_LAST = 'NULLS LAST';
+	/** @deprecated Use FieldKey instead */
+	public const FIELDS_KEY = self::FieldKey;
+	/** @deprecated Use NullsFirst instead */
+	public const NULLS_FIRST = self::NullsFirst;
+	/** @deprecated Use NullsLast instead */
+	public const NULLS_LAST = self::NullsLast;
 
 
 	/**
@@ -38,7 +46,7 @@ class SortableNullsWalker extends SqlWalker
 	 */
 	public function walkOrderByItem(OrderByItem $orderByItem): string
 	{
-		$hint = $this->getQuery()->getHint(self::FIELDS_KEY);
+		$hint = $this->getQuery()->getHint(self::FieldKey);
 		$sql = parent::walkOrderByItem($orderByItem);
 
 		if (empty($hint) || !is_array($hint)) {

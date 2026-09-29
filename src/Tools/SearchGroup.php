@@ -9,6 +9,8 @@ namespace JuniWalk\ORM\Tools;
 
 use JsonSerializable;
 
+use function array_values;
+
 class SearchGroup implements JsonSerializable
 {
 	public string $text;
