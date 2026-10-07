@@ -12,19 +12,20 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Exception as DriverException;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Doctrine\ORM\Mapping\MappingException;
+use Doctrine\ORM\Mapping\QuoteStrategy;
 
-use function array_filter;
-use function implode;
 use function in_array;
 
 class TableManager
 {
 	protected readonly Connection $connection;
+	protected readonly QuoteStrategy $quoteStrategy;
 
 	public function __construct(
 		protected readonly EntityManager $entityManager,
 	) {
 		$this->connection = $entityManager->getConnection();
+		$this->quoteStrategy = $entityManager->getConfiguration()->getQuoteStrategy();
 	}
 
 
@@ -34,8 +35,8 @@ class TableManager
 	 */
 	public function createPartition(string $entityName, DateTime $date, string $range): string
 	{
+		$partitionName = $this->tableName($entityName, '_'.$date->format('Ymd'));
 		$tableName = $this->tableName($entityName);
-		$partitionName = $tableName.'_'.$date->format('Ymd');
 
 		$valueFrom = $date->format('Y-m-d');
 		$valueTo = (clone $date)->modify($range)->format('Y-m-d');
@@ -70,12 +71,9 @@ class TableManager
             throw MappingException::mappingNotFound($entityName, $fieldName);
 		}
 
-		$columnName = $metaData->getColumnName($fieldName);
 		$id = $metaData->getSingleIdentifierColumnName();
-		$tableName = implode('.', array_filter([
-			$metaData->getSchemaName(),
-			$metaData->getTableName(),
-		]));
+		$columnName = $metaData->getColumnName($fieldName);
+		$tableName = $this->tableName($entityName);
 
 		$this->execute(<<<SQL
 			WITH cte AS (SELECT {$id}, ROW_NUMBER() OVER (ORDER BY "{$columnName}") AS rn FROM {$tableName})
@@ -87,16 +85,16 @@ class TableManager
 	/**
 	 * @param class-string $entityName
 	 */
-	public function tableName(string $entityName): string
+	public function tableName(string $entityName, string $suffix = ''): string
 	{
 		$metaData = $this->entityManager->getClassMetadata($entityName);
-		$tableName = $metaData->getTableName();
 
-		if ($schemaName = $metaData->getSchemaName()) {
-			$tableName = $schemaName.'.'.$tableName;
+		if ($suffix !== '') {
+			$metaData = clone $metaData;
+			$metaData->table['name'] .= $suffix;
 		}
 
-		return $tableName;
+		return $this->quoteStrategy->getTableName($metaData, $this->connection->getDatabasePlatform());
 	}
 
 
