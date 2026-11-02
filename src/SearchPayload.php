@@ -9,6 +9,7 @@ namespace JuniWalk\ORM;
 
 use JsonSerializable;
 use JuniWalk\ORM\Entity\Interfaces\HtmlOption;
+use JuniWalk\ORM\Enums\Display;
 use JuniWalk\ORM\Tools\SearchGroup;
 use JuniWalk\ORM\Tools\SearchResult;
 use Nette\Schema\Expect;
@@ -28,6 +29,7 @@ class SearchPayload implements JsonSerializable
 	protected int $pageCount = 0;
 	protected int $page;
 
+	protected ?Display $display = null;
 	protected Processor $processor;
 
 	/** @var array<string|int, SearchResult|SearchGroup> */
@@ -52,6 +54,18 @@ class SearchPayload implements JsonSerializable
 	public function getPage(): int
 	{
 		return $this->page;
+	}
+
+
+	public function setDisplay(?Display $display): void
+	{
+		$this->display = $display;
+	}
+
+
+	public function getDisplay(): ?Display
+	{
+		return $this->display;
 	}
 
 
@@ -178,7 +192,7 @@ class SearchPayload implements JsonSerializable
 	protected function checkStructure(mixed $data): SearchResult
 	{
 		if ($data instanceof HtmlOption) {
-			$data = $data->createOption();
+			$data = $data->createOption($this->display);
 		}
 
 		if ($data instanceof Html && $data->getName() == 'option') {

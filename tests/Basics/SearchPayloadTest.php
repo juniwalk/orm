@@ -7,7 +7,10 @@
 
 namespace JuniWalk\ORM\Tests\Basics;
 
+use JuniWalk\ORM\Entity\Interfaces\HtmlOption;
+use JuniWalk\ORM\Enums\Display;
 use JuniWalk\ORM\SearchPayload;
+use Nette\Utils\Html;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -61,6 +64,48 @@ final class SearchPayloadTest extends TestCase
 			],
 			'pagination' => ['more' => false, 'found' => 3, 'page' => 1],
 		], $this->decodePayload($payload));
+	}
+
+
+	public function testDisplaySmall(): void
+	{
+		$payload = new SearchPayload;
+		$payload->setDisplay(Display::Small);
+		$payload->addItem($this->createEntity());
+
+		Assert::same(Display::Small, $payload->getDisplay());
+		Assert::same('small', $this->decodePayload($payload)['results'][0]['text']);
+	}
+
+
+	public function testDisplayLarge(): void
+	{
+		$payload = new SearchPayload;
+		$payload->setDisplay(Display::Large);
+		$payload->addItem($this->createEntity());
+
+		Assert::same('large', $this->decodePayload($payload)['results'][0]['text']);
+	}
+
+
+	public function testDisplayDefault(): void
+	{
+		$payload = new SearchPayload;
+		$payload->addItem($this->createEntity());
+
+		Assert::null($payload->getDisplay());
+		Assert::same('default', $this->decodePayload($payload)['results'][0]['text']);
+	}
+
+
+	private function createEntity(): HtmlOption
+	{
+		return new class implements HtmlOption {
+			public function createOption(?Display $display = null): Html
+			{
+				return Html::el('option', ['value' => 1])->setText($display?->value ?? 'default');
+			}
+		};
 	}
 
 
