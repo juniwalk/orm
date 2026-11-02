@@ -10,12 +10,11 @@ namespace JuniWalk\ORM;
 use JsonSerializable;
 use JuniWalk\ORM\Entity\Interfaces\HtmlOption;
 use JuniWalk\ORM\Enums\Display;
-use JuniWalk\ORM\Tools\SearchGroup;
 use JuniWalk\ORM\Tools\SearchResult;
 use Nette\Schema\Expect;
 use Nette\Schema\Processor;
+use Nette\Schema\ValidationException;
 use Nette\Utils\Html;
-use Nette\Utils\Strings;
 use Throwable;
 
 use function array_values;
@@ -34,7 +33,7 @@ class SearchPayload implements JsonSerializable
 	protected ?Display $display = null;
 	protected Processor $processor;
 	
-	/** @var array<string|int, SearchResult|SearchGroup> */
+	/** @var array<string|int, SearchResult> */
 	protected array $items = [];
 
 
@@ -133,21 +132,13 @@ class SearchPayload implements JsonSerializable
 	public function addItem(mixed $item): void
 	{
 		$item = $this->checkStructure($item);
-		$key = (string) $item->id;
-
-		if ($group = $this->createGroup($item)) {
-			$group->children[$key] = $item;
-
-		} else {
-			$this->items[$key] = $item;
-		}
-
+		$this->items[(string) $item->id] = $item;
 		$this->pageCount += 1;
 	}
 
 
 	/**
-	 * @return array{results: list<SearchGroup|SearchResult>, pagination: array{more: bool, found: int, page: int}}
+	 * @return array{results: list<SearchResult>, pagination: array{more: bool, found: int, page: int}}
 	 */
 	public function getPayload(): array
 	{
@@ -168,30 +159,6 @@ class SearchPayload implements JsonSerializable
 	public function jsonSerialize(): mixed
 	{
 		return $this->getPayload();
-	}
-
-
-	/**
-	 * @throws Throwable
-	 */
-	protected function createGroup(SearchResult $result): ?SearchGroup
-	{
-		if (!$groupName = $result->group) {
-			return null;
-		}
-
-		$groupName = Strings::webalize($groupName);
-		$group = $this->items[$groupName] ?? null;
-
-		if ($group instanceof SearchGroup) {
-			return $group;
-		}
-
-		if ($group instanceof SearchResult) {
-			throw new \RuntimeException('A SearchResult with the same group name already exists.');
-		}
-
-		return $this->items[$groupName] = new SearchGroup($groupName);
 	}
 
 
@@ -220,17 +187,16 @@ class SearchPayload implements JsonSerializable
 			$item = $this->processor->process(Expect::from(new SearchResult), $data);
 
 			if (!$item instanceof SearchResult) {
-				throw new \RuntimeException('Processed item is not an instance of SearchResult.');
+				throw new ValidationException('Processed item is not an instance of SearchResult.');
 			}
 
-		} catch (Throwable $e) {
-			throw $e;
-		}
+			if ($this->isGroupsAllowed === false) {
+				$item->prependWithGroupName();
+			}
 
-		if ($this->isGroupsAllowed === false) {
-			$item->prependWithGroupName();
-		}
+			return $item;
 
-		return $item;
+		} finally {
+		}
 	}
 }

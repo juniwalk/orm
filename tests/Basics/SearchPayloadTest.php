@@ -10,7 +10,6 @@ namespace JuniWalk\ORM\Tests\Basics;
 use JuniWalk\ORM\Entity\Interfaces\HtmlOption;
 use JuniWalk\ORM\Enums\Display;
 use JuniWalk\ORM\SearchPayload;
-use JuniWalk\ORM\Tools\SearchResult;
 use Nette\Utils\Html;
 use Tester\Assert;
 use Tester\TestCase;
@@ -33,14 +32,9 @@ final class SearchPayloadTest extends TestCase
 
 		Assert::same([
 			'results' => [
-				[
-					'text' => 'favorite-fruits',
-					'children' => [
-						['id' => 1, 'text' => 'Apple', 'content' => null, 'group' => 'Favorite Fruits', 'icon' => null, 'color' => null, 'disabled' => false],
-						['id' => 3, 'text' => 'Pear', 'content' => null, 'group' => 'Favorite Fruits', 'icon' => null, 'color' => null, 'disabled' => false],
-					],
-				],
+				['id' => 1, 'text' => 'Apple', 'content' => null, 'group' => 'Favorite Fruits', 'icon' => null, 'color' => null, 'disabled' => false],
 				['id' => 2, 'text' => 'Other', 'content' => null, 'group' => null, 'icon' => null, 'color' => null, 'disabled' => false],
+				['id' => 3, 'text' => 'Pear', 'content' => null, 'group' => 'Favorite Fruits', 'icon' => null, 'color' => null, 'disabled' => false],
 			],
 			'pagination' => ['more' => false, 'found' => 3, 'page' => 1],
 		], $this->decodePayload($payload));
@@ -114,7 +108,7 @@ final class SearchPayloadTest extends TestCase
 	{
 		$results = $payload->getPayload()['results'];
 
-		if (!isset($results[0]) || !$results[0] instanceof SearchResult) {
+		if (!isset($results[0])) {
 			throw new \RuntimeException('Payload does not contain a result.');
 		}
 
