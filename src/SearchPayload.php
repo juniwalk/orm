@@ -24,24 +24,33 @@ use function is_null;
 
 class SearchPayload implements JsonSerializable
 {
+	protected readonly ?string $query;
+	protected int $page;
+	protected int $pageCount = 0;
+
 	protected bool $isGroupsAllowed = true;
 	protected ?int $maxResults = null;
-	protected int $pageCount = 0;
-	protected int $page;
-
+	
 	protected ?Display $display = null;
 	protected Processor $processor;
-
+	
 	/** @var array<string|int, SearchResult|SearchGroup> */
 	protected array $items = [];
 
 
-	public function __construct(?int $page = null, ?int $maxResults = null)
+	public function __construct(?int $page = null, ?int $maxResults = null, ?string $query = null)
 	{
 		$this->processor = new Processor;
 		$this->maxResults = $maxResults;
 		$this->page = $page ?? 1;
 		$this->pageCount = 0;
+		$this->query = $query;
+	}
+
+
+	public function getQuery(): ?string
+	{
+		return $this->query;
 	}
 
 
