@@ -23,15 +23,15 @@ use function is_null;
 
 class SearchPayload implements JsonSerializable
 {
-	private bool $isGroupsAllowed = true;
-	private ?int $maxResults = null;
-	private int $pageCount = 0;
-	private int $page;
+	protected bool $isGroupsAllowed = true;
+	protected ?int $maxResults = null;
+	protected int $pageCount = 0;
+	protected int $page;
 
-	private Processor $processor;
+	protected Processor $processor;
 
 	/** @var array<string|int, SearchResult|SearchGroup> */
-	private array $items = [];
+	protected array $items = [];
 
 
 	public function __construct(?int $page = null, ?int $maxResults = null)
